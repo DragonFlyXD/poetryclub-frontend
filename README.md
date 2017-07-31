@@ -1,30 +1,22 @@
-# vue-local
+## Intro
 
-> A Vue.js project
+[诗词小筑](http://www.dragonflyxd.com)的前台页面，基于**vue.js**+**element-ui**。
 
-## Build Setup
+> [诗词小筑的后台页面与后端代码](https://github.com/DragonFlyXD/poetryclub-backend)
 
-``` bash
-# install dependencies
+## 技术栈
+
+ vue2 + element-ui + vuex + vue-router + axios + stylus + ES6
+
+## How To Use
+
+```
+git clone https://github.com/DragonFlyXD/poetryclub-frontend
+
+cd poetryclub-frontend
+
 npm install
 
-# serve with hot reload at localhost:8080
 npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
 ```
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
