@@ -20,3 +20,8 @@ npm install
 npm run dev
 ```
 
+## Screenshot
+
+![](https://github.com/DragonFlyXD/poetryclub-frontend/blob/master/screenshots/home.png)
+
+![](https://github.com/DragonFlyXD/poetryclub-frontend/blob/master/screenshots/profile.png)
