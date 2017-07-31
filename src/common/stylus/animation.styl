@@ -1,0 +1,101 @@
+@import "./mixins"
+
+/* 标签动画 */
+@keyframes skTag
+  33%
+    margin-right 0 10px
+    transform rotateY(90deg)
+  50%
+    border 0
+    border-radius 50%
+    font-size 1.5em
+    color Green
+    transform rotateZ(90deg)
+  100%
+    zoom 1.2
+/* 收藏、写赏析、点赞、分享动画 */
+@keyframes skAct
+  33%
+    zoom 1.1
+    margin-right 0 10px
+    opacity .899
+    transform rotateZ(-80deg)
+  50%
+    zoom 1.2
+    border 0
+    opacity .5
+    transform rotateZ(-120deg)
+  77%
+    zoom 1.3
+    opacity 0
+/* 点击评论框显示按钮 */
+@keyframes showBtn
+  0%
+    border-radius 50%
+    zoom .001
+    transform scale(0)
+  100%
+    border-radius 4px
+    zoom 1
+    transform scale(1)
+/* 评论文本框无内容时动画 */
+@keyframes skTxta
+  0%
+    opacity .7
+    transform scale(1)
+  33%
+    padding-left 1px
+    opacity .765
+    transform scale(.999)
+  50%
+    padding-top 1px
+    opacity .8
+    transform scale(.997)
+  80%
+    opacity .765
+    transform scale(.998)
+  100%
+    opacity .7
+    transform scale(1)
+/* 私信小圆球动画 */
+@keyframes drpGlobe
+  33%
+    transform rotateZ(90deg)
+    opacity .9
+  50%
+    top 50%
+    font-size 1.5em
+    opacity .7
+    transform rotateY(90deg)
+  77%
+    opacity .9
+    transform rotateX(90deg)
+  100%
+    opacity 1
+/* 无内容动画 */
+@keyframes showHint
+  0%
+    zoom 1
+    opacity .999
+    transform skew(20deg)
+  33%
+    transform translateX(20px)
+  50%
+    zoom .999
+    color Dark-White
+    opacity .8
+    transform translateX(10px)
+  77%
+    transform rotate(4deg)
+  80%
+    color Light-Silver
+    transform scale(.9)
+  100%
+    zoom 1
+    opacity .1
+    transform skew(30deg)
+/* intro icon动画 */
+@keyframes tfIcon
+  50%
+    font-size 1em
+    opacity 0

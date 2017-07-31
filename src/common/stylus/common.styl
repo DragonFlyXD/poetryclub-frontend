@@ -1,0 +1,214 @@
+@import './animation'
+
+.clearfix::after
+  display block
+  clear both
+  visibility hidden
+  height 0
+  overflow hidden
+  content '.'
+.clearfix
+  zoom 1
+
+.line
+  clear both
+  height 1px
+  background-color Green
+
+.light-line
+  clear both
+  height 1px
+  background-color Light-Green
+
+.text-line-40
+  txtline(40%)
+
+.text-line-35
+  txtline(35%)
+
+.tdu
+  color Green
+  text-decoration none
+  &:hover
+    text-decoration underline
+
+.btn-default
+  color Silver !important
+  text-align center
+  &:hover, &:focus
+    bdco(Green !important, Green !important)
+
+.btn-act
+  bdco(mgreen(.8) !important, mgreen(.8) !important,)
+  &:focus, &:hover
+    border-color mgreen(.8) !important
+  i
+    color mgreen(.8)
+
+.btn-can
+  bc(White !important,Light-Silver !important)
+  transition all .15s
+  &:hover,&:focus
+    bdco(Light-Silver !important,Silver !important)
+
+.btn-pub
+  bc(Green !important, White !important)
+  border-color Green !important
+  transition all .15s
+  &:hover,&:focus
+    bc(Orange !important, White !important)
+    border-color Orange !important
+
+/* ------------    ~~~   -------------- /*
+
+/* 表单 */
+.c-form
+  input, textarea
+    color Green
+    &:hover, &:focus
+      border-color Green
+    &::placeholder
+      font-size .8em
+  button
+    font-size .8em
+    color Silver
+    transition all .2s
+    &:hover,&:focus
+      border-color Green
+      color Green
+  .is-error input, .is-error textarea
+    border-color Red !important
+  .el-form-item__error
+    color Red
+  .el-form-item__label
+    &::before
+      content '' !important
+  .is-checked
+    span
+      border-color Green !important
+      background-color Green !important
+      transition all .3s ease
+  .el-radio__inner:hover,.el-radio__inner:focus
+    border-color Green !important
+  .el-checkbox__inner:hover,.el-checkbox__inner:focus,.el-checkbox__inner:visited
+    border-color Green !important
+  .is-focus
+    span
+      border-color Green !important
+      &:hover,&:focus
+        border-color Green !important
+
+/* quill 编辑器 */
+.c-quill
+  .ql-editor
+    min-height 300px
+    border 1px solid Extra-Light-Silver
+    border-radius 5px
+    color Green
+
+/* 消息提示 */
+.c-msg
+  .el-message__closeBtn:hover
+    color Green
+
+.c-confirm
+  .el-message-box__header
+    i
+      &:hover,&:focus
+        color Green
+
+/* el-autocomplete 下拉框 */
+.c-popper
+  li:hover
+    color Dark-White
+    background-color Green
+
+/* 私信对话框 */
+.c-reply
+  .el-dialog__header
+    &>span
+      color Silver
+    i
+      &:hover,&:focus
+        color Green
+  .header
+    color Silver
+    margin-bottom 10px
+    .receiver
+      font-weight bold
+      letter-spacing 2px
+      color Green
+.c-tags
+  display inline-block
+  &>i
+    color mgreen(.8)
+  .tag
+    margin-right 5px
+    border-color Extra-Light-Silver
+    bc(inherit,Silver)
+    cursor pointer
+    &:hover
+      animation skTag 1s cubic-bezier(1,.8,.5,1)
+
+/* 环形进度条 */
+.c-progress
+  .el-progress-circle__path
+    stroke Green !important
+  .el-progress__text
+    color Green
+
+/* 对话框 */
+.c-dialog
+	i
+	  &:hover,&:focus
+	    color Green !important
+
+/* 加载 */
+.c-loading
+  svg
+    circle
+      stroke Green !important
+  .el-loading-text
+    color Green !important
+
+/* 通知 */
+.c-note
+  border 1px solid Light-Green
+  .el-notification__closeBtn:hover
+    color Green
+
+/* alert */
+.el-alert
+  border-radius 0
+
+/* 日期选择器 */
+.el-date-picker__header
+  button,span
+    &:hover,&:focus
+      color Green !important
+.el-picker-panel__content
+  .el-date-table
+    td
+      border-color Green !important
+      &:hover,&:focus
+        border-radius 50%
+        border 1px solid Green !important
+        bc(White !important,Green !important)
+        transition all .5s ease
+    .current:not(.disabled),.today
+      border-radius 50%
+      border 1px solid Green !important
+      bc(Green !important,White !important)
+    .today::before
+      border-top-color Green !important
+  .el-month-table,.el-year-table
+    .cell:hover,.cell:focus
+      border-radius 50%
+      border 1px solid Green !important
+      bc(White !important,Green !important)
+      transition all .7s ease
+    .current:not(.disabled)
+      .cell
+        border-radius 50%
+        border 1px solid Green !important
+        bc(Green !important,White !important)
