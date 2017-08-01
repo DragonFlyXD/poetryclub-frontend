@@ -3,7 +3,7 @@
     <header class="header">
       <div class="left">
         <div class="avatar">
-          <img class="now-avatar" :src="profile.avatar" alt="avatar">
+          <img class="now-avatar" :src="userProfile.avatar" alt="avatar">
           <el-upload
             class="update-avatar"
             :name="uploadOptions.name"
@@ -20,19 +20,19 @@
         </div>
       </div>
       <div class="mid">
-        <h1 class="name">{{ profile.nickname }}</h1>
+        <h1 class="name">{{ userProfile.nickname }}</h1>
         <div class="info">
           <div class="box">
             <span>文章</span>
-            <span>{{ profile.works_count }}</span>
+            <span>{{ userProfile.works_count }}</span>
           </div>
-          <div class="box">
+          <div class="box" @click="followers">
             <span>关注</span>
-            <span>{{ profile.followers_count }}</span>
+            <span>{{ userProfile.followers_count }}</span>
           </div>
-          <div class="box">
-            <span>关注者</span>
-            <span>{{ profile.followings_count }}</span>
+          <div class="box" @click="followings">
+            <span>粉丝</span>
+            <span>{{ userProfile.followings_count }}</span>
           </div>
           <el-button class="btn-pub" @click="toggleProfileDialog" v-if="isOwns">修改个人资料</el-button>
         </div>
@@ -52,58 +52,58 @@
       <div class="content">
         <div class="box">
           <h4>昵称</h4>
-          <span>{{ profile.nickname }}</span>
+          <span>{{ userProfile.nickname }}</span>
         </div>
         <div class="box">
           <h4>性别</h4>
-          <span>{{ profile.gender }}</span>
+          <span>{{ userProfile.gender }}</span>
         </div>
         <div class="box">
           <h4>生日</h4>
-          <span>{{ profile.birthday }}</span>
+          <span>{{ userProfile.birthday }}</span>
         </div>
         <div class="box">
           <h4>私人语录</h4>
-          <span class="f-taj">{{ profile.signature }}</span>
+          <span class="f-taj">{{ userProfile.signature }}</span>
         </div>
         <div class="box">
            <h4>居住地</h4>
-          <span>{{ profile.location }}</span>
+          <span>{{ userProfile.location }}</span>
         </div>
         <div class="box">
           <h4>职业</h4>
-          <span>{{ profile.occupation }}</span>
+          <span>{{ userProfile.occupation }}</span>
         </div>
         <div class="box">
           <h4>个人简历</h4>
-          <span class="f-taj">{{ profile.bio }}</span>
+          <span>{{ userProfile.bio }}</span>
         </div>
         <div class="box">
           <h4>最钟爱的诗人</h4>
-          <span>{{ profile.poet }}</span>
+          <span>{{ userProfile.poet }}</span>
         </div>
       </div>
     </div>
     <el-dialog title="编辑个人信息" :visible.sync="dialogVisible" custom-class="profile-dialog c-dialog">
       <div class="form-wrapper">
-        <el-form class="c-form form" label-width="100px" ref="profile" :model="profile" :rules="rules">
+        <el-form class="c-form form" label-width="100px" ref="userProfile" :model="userProfile" :rules="rules">
           <el-form-item label="昵称" prop="nickname">
             <el-input
-            v-model="profile.nickname"
+            v-model="userProfile.nickname"
             :placeholder="placeholder.nickname"
             @focus="hidePlaceholder"
             @blur="showPlaceholder"
             ></el-input>
           </el-form-item>
           <el-form-item label="性别" prop="gender">
-            <el-radio-group v-model="profile.gender" fill="#42b983" text-color="rgba(66,185,131,.8)">
+            <el-radio-group v-model="userProfile.gender" fill="#42b983" text-color="rgba(66,185,131,.8)">
               <el-radio label="男">男</el-radio>
               <el-radio label="女">女</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="生日" prop="birthday">
             <el-date-picker
-              v-model="profile.birthday"
+              v-model="userProfile.birthday"
               type="date"
               :placeholder="placeholder.birthday"
               :editable="false"
@@ -113,7 +113,7 @@
           <el-form-item label="私人语录" prop="signature">
             <el-input
             type="textarea"
-            v-model="profile.signature"
+            v-model="userProfile.signature"
             :placeholder="placeholder.signature"
             :rows="2"
             @focus="hidePlaceholder"
@@ -123,7 +123,7 @@
           <el-form-item label="居住地" prop="location">
             <el-input
             :placeholder="placeholder.location"
-            v-model="profile.location"
+            v-model="userProfile.location"
             @focus="hidePlaceholder"
             @blur="showPlaceholder"
             ></el-input>
@@ -131,7 +131,7 @@
           <el-form-item label="职业" prop="occupation">
             <el-input
               :placeholder="placeholder.occupation"
-              v-model="profile.occupation"
+              v-model="userProfile.occupation"
               @focus="hidePlaceholder"
               @blur="showPlaceholder"
             ></el-input>
@@ -139,7 +139,7 @@
           <el-form-item label="个人简介" prop="bio">
             <el-input
               type="textarea"
-              v-model="profile.bio"
+              v-model="userProfile.bio"
               :placeholder="placeholder.bio"
               :autosize="{minRows:4,maxRows:20}"
               @focus="hidePlaceholder"
@@ -149,13 +149,13 @@
           <el-form-item label="最钟爱的诗人" prop="poet">
             <el-input
               :placeholder="placeholder.poet"
-              v-model="profile.poet"
+              v-model="userProfile.poet"
               @focus="hidePlaceholder"
               @blur="showPlaceholder"
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button class="publish" @click="submitProfile">确定</el-button>
+            <el-button class="publish" @click="submitForm">确定</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -228,7 +228,7 @@ export default {
           trigger: 'blur'
         }]
       },
-      profile: {},  // 个人信息 or 用户信息
+      userProfile: {},  // 个人信息 or 用户信息
       uploadOptions: {
         name: 'avatar',  // 上传图片字段名
         action: 'http://www.dragonflyxd.com/api/user/avatar',  // 上传图片地址
@@ -261,10 +261,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      isLogined: 'isLogined',
-      __profile: 'profile'
-    })
+    ...mapGetters([
+      'isLogined',
+      'profile'
+    ])
   },
   created() {
     // 检查是否是个人信息页面
@@ -292,15 +292,12 @@ export default {
       // 若加载的为个人信息页面
       if (this.isOwns) {
         await this.loadProfile()
-        this.profile = this.__profile
+        this.userProfile = this.profile
       } else {
         this.TOGGLE_LOADING_STATUS()
         await api.get(path).then(response => {
           this.TOGGLE_LOADING_STATUS()
-          // 替换昵称
-          response.data.nickname = response.data.name
-          // 加载用户信息
-          this.profile = response.data
+          this.userProfile = response.data
         }).catch(error => {
           this.TOGGLE_LOADING_STATUS()
           this.$message({message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~', type: 'error', customClass: 'c-msg', duration: 0, showClose: true})
@@ -315,7 +312,7 @@ export default {
       let cnt = 0
       this.matches.forEach(item => {
         // 获取完成总数
-        this.profile[item] && cnt++
+        this.userProfile[item] && cnt++
       })
       // 计算个人信息完成百分比
       this.completion = cnt * 100 / this.matches.length
@@ -353,24 +350,30 @@ export default {
       res.avatar && this.updateAvatar(res.avatar)
     },
     // 提交个人信息表单
-    submitProfile() {
+    submitForm() {
       // 修改生日的日期格式
-      if (this.profile.birthday) {
-        this.profile.birthday = this.dateFormatter(this.profile.birthday)
+      if (this.userProfile.birthday) {
+        this.userProfile.birthday = this.dateFormatter(this.userProfile.birthday)
       }
       // 验证表单数据的合法性
-      this.$refs['profile'].validate(async valid => {
+      this.$refs['userProfile'].validate(async valid => {
         // 如果验证成功，则提交数据
         if (valid) {
           // 修改数据
           await this.updateProfile()
-          this.profile = this.__profile
+          this.userProfile = this.profile
           // 更新个人信息完成度
           this.checkoutCompletion()
           // 隐藏对话框
           this.dialogVisible = false
         }
       })
+    },
+    followings() {
+      this.$router.push(`/user/${this.userProfile.name}/followings`)
+    },
+    followers() {
+      this.$router.push(`/user/${this.userProfile.name}/followers`)
     },
     dateFormatter(date) {
       return new Date(date).toLocaleDateString()
@@ -452,6 +455,10 @@ export default {
         .box
           display inline-block
           margin-left 20px
+          transition color .1s
+          &:hover
+            color Red
+            cursor pointer
           span
             display block
             font-size 1.3em

@@ -8,6 +8,7 @@ import UserLogin from '@/pages/user/Login.vue'
 import UserRegister from '@/pages/user/Register.vue'
 import UserProfile from '@/pages/user/Profile.vue'
 import UserReset from '@/pages/user/Reset.vue'
+import UserFollow from '@/pages/user/Follow.vue'
 
 // 诗库相关
 import Poem from '@/pages/poem'
@@ -67,9 +68,17 @@ const router = new Router({
         requiresAuth: true
       }
     }, {
-      path: '/user/:name([\\u4E00-\\u9FFFa-zA-Z0-9_-]{4,20})',
+      path: '/user/:name([\\u4E00-\\u9FFFa-zA-Z0-9_-]{2,20})',
       name: 'userCenter',
       component: UserProfile
+    }, {
+      path: '/user/:name([\\u4E00-\\u9FFFa-zA-Z0-9_-]{2,20})/followers',
+      name: 'userFollower',
+      component: UserFollow
+    }, {
+      path: '/user/:name([\\u4E00-\\u9FFFa-zA-Z0-9_-]{2,20})/followings',
+      name: 'userFollowing',
+      component: UserFollow
     }, {
       path: '/poem',
       name: 'poem',

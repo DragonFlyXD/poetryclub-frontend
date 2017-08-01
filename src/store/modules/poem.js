@@ -118,9 +118,9 @@ const actions = {
     }
   },
   // 切换作者的关注状态
-  toggleAuthorFollowed({commit}, user) {
+  async toggleAuthorFollowed({commit}, user) {
     if (c.notLogged()) {
-      api.post('user/follow', {'user': user}).then(response => {
+      await api.post('user/follow', {'user': user}).then(response => {
         commit(types.TOGGLE_POEM_AUTHOR_FOLLOWED, response.data.followed)
       }).catch(error => {
         Message({message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~', type: 'error', customClass: 'c-msg', duration: 0, showClose: true})

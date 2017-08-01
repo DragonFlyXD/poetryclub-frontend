@@ -52,10 +52,10 @@
           <div class="main">
             <div class="info">
               <div class="name">
-                <router-link class="tdu" :to="{ path: item.profileUrl }">{{ item.name }}</router-link>
+                <router-link class="tdu" :to="{ path: item.profileUrl }">{{ item.nickname }}</router-link>
                 <template v-if="item.parent !== null">
                   <span>回复</span>
-                  <router-link class="tdu" :to="{ path: item.parent.profileUrl }">{{ item.parent.name }}</router-link>
+                  <router-link class="tdu" :to="{ path: item.parent.profileUrl }">{{ item.parent.nickname }}</router-link>
                 </template>
               </div>
               <span>{{ item.publish_time }}</span>

@@ -4,7 +4,8 @@ import {Message} from 'element-ui'
 const state = {
   // 个人信息
   profile: {
-    id: '',
+    name: '', // 用户名
+    id: '', // ID
     nickname: '', // 昵称
     gender: '', // 性别
     birthday: '', // 生日
@@ -36,8 +37,6 @@ const actions = {
     commit(types.TOGGLE_LOADING_STATUS)
     await api.get('user').then(response => {
       commit(types.TOGGLE_LOADING_STATUS)
-      // 替换昵称
-      response.data.nickname = response.data.name
       // 加载用户信息
       commit(types.LOAD_PROFILE, response.data)
     }).catch(error => {

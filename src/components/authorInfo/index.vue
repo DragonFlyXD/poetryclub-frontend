@@ -5,9 +5,15 @@
         <img class="avatar" :src="page.user.avatar" alt="avatar">
       </router-link>
       <div class="info">
-        <p>作品<span>{{ page.user.works_count }}</span></p>
-        <p>关注<span>{{ page.user.followings_count }}</span></p>
-        <p>关注者<span>{{ page.user.followers_count }}</span></p>
+        <router-link :to="{ path: '/user/'+page.user.name+'/works' }">
+          <p>作品<span>{{ page.user.works_count }}</span></p>
+        </router-link>
+        <router-link :to="{ path: '/user/'+page.user.name+'/followers' }">
+          <p>关注<span>{{ page.user.followers_count }}</span></p>
+        </router-link>
+        <router-link :to="{ path: '/user/'+page.user.name+'/followings' }">
+          <p>粉丝<span>{{ page.user.followings_count }}</span></p>
+        </router-link>
       </div>
       <div class="clearfix"></div>
     </header>
@@ -46,7 +52,7 @@
     <footer class="footer" v-if="page.user.id !== profile.id">
       <el-button class="btn-default" @click="toggleReplyDialog"><i class="fa fa-envelope-o"></i></el-button>
       <el-button
-        class="btn-act"
+        class="btn-pub"
         @click="toggleAuthorFollowed(page.user.id)"
         v-if="status.followed"
       >已关注</el-button>
@@ -84,7 +90,7 @@
       >
       <header class="header">
         <span class="title">接收人：</span>
-        <span class="receiver">{{ page.user.name }}</span>
+        <span class="receiver">{{ page.user.nickname }}</span>
       </header>
       <el-input
         class="c-form"
@@ -165,6 +171,13 @@ export default {
     .info
       float right
       font(.9em,Silver)
+      a
+        text-decoration none
+        color Silver
+        &:hover
+          color Red
+          & span
+            color Red
       span
         float right
         display inline-block

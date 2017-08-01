@@ -32,12 +32,6 @@
             <el-menu-item index="8-2">
               <i class="fa fa-cog"></i>账户设置
             </el-menu-item>
-            <el-menu-item index="8-3" :route="{ name:'userFavorites' }">
-              <i class="fa fa-file"></i>收藏列表
-            </el-menu-item>
-            <el-menu-item index="8-4" :route="{ name:'userHistory' }">
-              <i class="fa fa-paw"></i>私人动态
-            </el-menu-item>
             <el-menu-item index="8-5" :route="{ name: 'userReset'}">
               <i class="fa fa-paper-plane"></i>修改密码
             </el-menu-item>
