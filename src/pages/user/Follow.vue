@@ -3,11 +3,10 @@
     <intro :intro="followersIntro" v-if="isFollowerList"></intro>
     <intro :intro="followingsIntro" v-else></intro>
     <div class="main-wrapper">
-      <div class="main">
+      <div class="main" v-if="localData.length > 0">
         <div
           class="item"
           v-for="(item,index) in localData"
-          v-if="localData.length > 0"
           :key="index"
           >
           <div class="content-wrapper">
@@ -37,8 +36,8 @@
             <el-button class="btn-can" @click="toggleUserFollowed(item.id, index)" v-else>关注Ta</el-button>
           </div>
         </div>
-        <blank-area v-else></blank-area>
       </div>
+      <blank-area v-else></blank-area>
     </div>
   </div>
 </template>
@@ -46,7 +45,7 @@
 import api from '@/api'
 import Intro from '@/components/intro'
 import BlankArea from '@/components/blankArea'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'userFollow',
   components: {
@@ -66,7 +65,7 @@ export default {
         icon: 'fa fa-gavel'
       },
       isFollowerList: false,
-      localData: {}
+      localData: []
     }
   },
   computed: {
@@ -94,10 +93,13 @@ export default {
     },
     // 获取关注数据
     getLocalData() {
+      this.TOGGLE_LOADING_STATUS()
       this.checkoutPage()
       api.get(this.$router.currentRoute.path).then(response => {
+        this.TOGGLE_LOADING_STATUS()
         this.localData = response.data
       }).catch(error => {
+        this.TOGGLE_LOADING_STATUS()
         this.$message({
           message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
           type: 'error',
@@ -113,6 +115,9 @@ export default {
       await this.toggleAuthorFollowed(id)
       this.localData[index]['followed'] = this.poemStatus.followed
     },
+    ...mapMutations([
+      'TOGGLE_LOADING_STATUS'
+    ]),
     ...mapActions([
       'toggleAuthorFollowed'
     ])

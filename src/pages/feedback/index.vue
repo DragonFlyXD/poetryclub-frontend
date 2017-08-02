@@ -5,7 +5,10 @@
         <div class="declaration">
           初次建站，难免有大量BUG与须完善的功能。<br/>
           如有疏漏不妥之处，还请不吝赐教。<br />
-          拜谢。:)
+          拜谢。
+          <a class="tdu" href="https://segmentfault.com/a/1190000010428981" target="_blank">
+            网站已开源 :)
+          </a>
         </div>
         <el-form class="form c-form" ref="form" :model="form" :rules="rules">
           <div class="info">

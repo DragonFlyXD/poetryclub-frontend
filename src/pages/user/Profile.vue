@@ -22,7 +22,7 @@
       <div class="mid">
         <h1 class="name">{{ userProfile.nickname }}</h1>
         <div class="info">
-          <div class="box">
+          <div class="box" @click="works">
             <span>文章</span>
             <span>{{ userProfile.works_count }}</span>
           </div>
@@ -368,6 +368,9 @@ export default {
           this.dialogVisible = false
         }
       })
+    },
+    works() {
+      this.$router.push(`/user/${this.userProfile.name}/works`)
     },
     followings() {
       this.$router.push(`/user/${this.userProfile.name}/followings`)
