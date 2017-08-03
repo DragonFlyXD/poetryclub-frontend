@@ -52,15 +52,17 @@
           <div class="main">
             <div class="info">
               <div class="name">
+                <span class="reply-title" v-if="item.parent !== null">勇敢的回复者</span>
                 <router-link class="tdu" :to="{ path: item.profileUrl }">{{ item.nickname }}</router-link>
-                <template v-if="item.parent !== null">
-                  <span>回复</span>
-                  <router-link class="tdu" :to="{ path: item.parent.profileUrl }">{{ item.parent.nickname }}</router-link>
-                </template>
               </div>
               <span>{{ item.publish_time }}</span>
             </div>
             <div class="body">{{ item.body }}
+              <div class="reply-body" v-if="item.parent !== null">
+                <span class="reply-title">骄傲的先驱者</span>
+                <router-link class="tdu" :to="{ path: item.parent.profileUrl }">{{ item.parent.nickname }}:</router-link>
+                <span>{{ item.parent.body }}</span>
+              </div>
               <div class="c-form form" :ref="item.id">
                 <el-input
                   type="textarea"
@@ -164,7 +166,7 @@ export default {
       const comment = {
         'model': this.modelId,
         'body': body,
-        'parent': e.currentTarget.dataset.userId
+        'parent': e.currentTarget.dataset.commentId
       }
       await this.storePoemComment(comment)
       this.isIndex && await this.getPoemComments(this.modelId)
@@ -278,6 +280,12 @@ export default {
       .main
         width 100%
         margin-left 15px
+        .reply-title
+          padding 2px
+          border 1px solid Extra-Light-Silver
+          border-radius 3px
+          font-size .7em
+          color Silver
         .info
           fj(space-between)
         .body
@@ -285,8 +293,16 @@ export default {
           margin-top 5px
           font-size 1.2em
           line-height 2em
+          .reply-body
+            position relative
+            margin-top 5px
+            padding 10px
+            border 1px solid Extra-Light-Grey
+            border-radius 3px
+            background-color Dark-White
           .form
             display none
+            margin-top 10px
             .button-group
               margin-top 10px
           .reply

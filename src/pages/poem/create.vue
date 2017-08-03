@@ -124,7 +124,7 @@ export default {
   methods: {
     // 远程获取分类列表
     async fetchCategory(queryStr, cb) {
-      await api.get('category?query=' + queryStr).then(response => {
+      await api.get(`category?query=${queryStr}`).then(response => {
         this.categories = response.data.data.map(item => {
           item['value'] = item['name']
           return item

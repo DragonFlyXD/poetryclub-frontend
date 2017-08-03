@@ -3,8 +3,8 @@ import api from '@/api'
 import {Message} from 'element-ui'
 import router from '../../router'
 const state = {
-  allMessages: {},
-  unreadMessages: {},
+  allMessages: [],
+  unreadMessages: [],
   inboxDialog: [],
   unreadLength: 0
 }
@@ -20,11 +20,8 @@ const actions = {
     commit(types.TOGGLE_LOADING_STATUS, quit)
     await api.get('inbox').then(response => {
       commit(types.TOGGLE_LOADING_STATUS, quit)
-      // 获取私信列表并计算未读私信的数量
-      let unreadArr = Object.keys(response.data.unreadMessages)
-      let unreadLength = unreadArr ? unreadArr.length : 0
-      response.data['unreadLength'] = unreadLength
       commit(types.LOAD_INBOX_MESSAGES, response.data)
+      console.log(response.data)
     })
   },
   // 加载对话列表
@@ -93,6 +90,18 @@ const mutations = {
       // 剔除已删除的私信内容
       if (item.id === id) {
         state.inboxDialog.splice(key, 1)
+      }
+    })
+  },
+  // 存储私信内容
+  [types.STORE_INBOX_MESSAGE](state, message) {
+    state.allMessages.map((item, index) => {
+      // 若私信双方有交流过，则存储在对话列表中
+      if (item['dialog_id'] === message['dialog_id']) {
+        state.allMessages[index] = message
+      } else {
+        // 若无交流过，则置于全部私信开头
+        state.allMessages.unshift(message)
       }
     })
   }

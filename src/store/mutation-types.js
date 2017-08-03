@@ -29,5 +29,8 @@ export const LOAD_INBOX_MESSAGES = 'inbox/LOAD_INBOX_MESSAGES'
 export const LOAD_INBOX_DIALOG = 'inbox/LOAD_INBOX_DIALOG'
 export const DELETE_INBOX_DIALOG = 'inbox/DELETE_INBOX_DIALOG'
 export const DELETE_INBOX_MESSAGE = 'inbox/DELETE_INBOX_MESSAGES'
+// 存储私信内容
+export const STORE_INBOX_MESSAGE = 'inbox/STORE_INBOX_MESSAGE'
+export const STORE_DIALOG_MESSAGE = 'inbox/STORE_DIALOG_MESSAGE'
 // 加载检索的诗文列表
 export const SCOUT_POEMLIST = 'scout/SCOUT_POENLIST'

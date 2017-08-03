@@ -89,7 +89,7 @@
       :visible.sync="replyDialogVisible"
       >
       <header class="header">
-        <span class="title">接收人：</span>
+        <span class="title">收信人：</span>
         <span class="receiver">{{ page.user.nickname }}</span>
       </header>
       <el-input

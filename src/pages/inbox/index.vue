@@ -4,8 +4,12 @@
     <div class="main-wrapper">
       <div class="main">
         <div class="button-group">
-          <el-button class="btn-default" @click="toggleReplyDialog">发送私信</el-button>
-          <el-button class="btn-default" @click="markAsRead">全部标记为已读</el-button>
+          <el-button class="btn-default" @click="toggleReplyDialog">
+            <i class="fa fa-send"></i> 发送私信
+          </el-button>
+          <el-button class="btn-default" @click="markAsRead">
+            <i class="fa fa-check"></i> 全部标记为已读
+          </el-button>
         </div>
         <el-tabs type="card" class="content">
           <el-tab-pane>
@@ -15,15 +19,15 @@
             <template v-if="unreadMessages.length>0">
               <div class="inbox-item" v-for="(message,key) in unreadMessages" :key="key">
                 <router-link :to="message.user.profileUrl">
-                  <img class="avatar" src="#" alt="avatar">
+                  <img class="avatar" :src="message.user.avatar" alt="avatar">
                 </router-link>
                 <div class="item-content">
-                  <router-link class="tdu" :to="message.user.profileUrl">{{ message.user.name }}</router-link>
+                  <router-link class="tdu" :to="message.user.profileUrl">{{ message.user.nickname }}</router-link>
                   <p>{{ message.body }}</p>
                   <div class="info">
-                    <span class="created-at">{{ message.created_at }}</span>
+                    <span class="created-at">{{ message.publish_time }}</span>
                     <div class="item-button-group">
-                      <el-button class="btn-pub" @click="goDialog(message.dialogUrl)">查看对话</el-button>
+                      <el-button class="btn-pub" @click="readDialog(message.dialogUrl)">查看对话</el-button>
                       <el-button class="btn-can" :data-did="message.dialog_id" @click="_deleteInboxDialog">
                         <i class="fa fa-trash-o" :data-did="message.dialog_id"></i>
                       </el-button>
@@ -33,7 +37,7 @@
               </div>
             </template>
             <blank-area
-              hint="私信空空"
+              hint="暂无私信"
               v-else
             ></blank-area>
           </el-tab-pane>
@@ -44,15 +48,15 @@
             <template v-if="allMessages.length>0">
               <div class="inbox-item" v-for="message in allMessages">
                 <router-link :to="message.user.profileUrl">
-                  <img class="avatar" src="#" alt="avatar">
+                  <img class="avatar" :src="message.user.avatar" alt="avatar">
                 </router-link>
                 <div class="item-content">
-                  <router-link class="tdu" :to="message.user.profileUrl">{{ message.user.name }}</router-link>
+                  <router-link class="tdu" :to="message.user.profileUrl">{{ message.user.nickname }}</router-link>
                   <p>{{ message.body }}</p>
                   <div class="info">
-                    <span class="created-at">{{ message.created_at }}</span>
+                    <span class="created-at">{{ message.publish_time }}</span>
                     <div class="item-button-group">
-                      <el-button class="btn-pub" @click="goDialog(message.dialogUrl)">查看对话</el-button>
+                      <el-button class="btn-pub" @click="readDialog(message.dialogUrl)">查看对话</el-button>
                       <el-button class="btn-can" :data-did="message.dialog_id" @click="_deleteInboxDialog">
                         <i class="fa fa-trash-o" :data-did="message.dialog_id"></i>
                       </el-button>
@@ -62,7 +66,7 @@
               </div>
             </template>
             <blank-area
-              hint='私信空空'
+              hint='暂无私信'
               v-else
             ></blank-area>
           </el-tab-pane>
@@ -75,20 +79,7 @@
       size="tiny"
       v-model="dialogVisible"
       >
-      <header class="header">
-        <span>接收人：</span>
-        <span class="receiver">赵四</span>
-      </header>
-      <el-input
-        class="c-form"
-        type="textarea"
-        resize="none"
-        :autosize="{ minRows: 4, maxRows: 6}"
-      ></el-input>
-      <footer slot="footer">
-        <el-button class="btn-default" type="text" @click="toggleReplyDialog">取消</el-button>
-        <el-button class="btn-default">确定</el-button>
-      </footer>
+      <reply @isCancel="toggleReplyDialog"></reply>
     </el-dialog>
   </div>
 </template>
@@ -100,11 +91,13 @@ import {
 } from 'vuex'
 import Intro from '@/components/intro'
 import BlankArea from '@/components/blankArea'
+import Reply from '@/components/reply'
 export default {
   name: 'inbox',
   components: {
     Intro,
-    BlankArea
+    BlankArea,
+    Reply
   },
   data() {
     return {
@@ -128,7 +121,7 @@ export default {
   },
   methods: {
     // 跳转到指定对话列表
-    goDialog(dialogUrl) {
+    readDialog(dialogUrl) {
       this.$router.push(dialogUrl)
     },
     // 全部标志已读
