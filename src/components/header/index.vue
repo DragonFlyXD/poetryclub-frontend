@@ -28,19 +28,20 @@
             trigger="click"
           >
             <span class="title">全部私信</span>
-            <div
-              class="content"
-              v-for="(message,index) in allMessages"
-              v-if="allMessages.length > 0"
-              >
-              <div class="item" @click="dialog(message.dialogUrl)">
-                <img :src="message.user.avatar" alt="avatar" class="avatar">
-                <div class="main">
-                  <span class="name">{{ message.user.nickname }}</span>
-                  <span class="body">{{ message.body }}</span>
+            <template v-if="allMessages.length > 0">
+              <div
+                class="content"
+                v-for="(message,index) in allMessages"
+                >
+                <div class="item" @click="dialog(message.dialogUrl)">
+                  <img :src="message.user.avatar" alt="avatar" class="avatar">
+                  <div class="main">
+                    <span class="name">{{ message.user.nickname }}</span>
+                    <span class="body">{{ message.body }}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </template>
             <blank-area hint="暂无私信" v-else></blank-area>
             <footer class="footer">
               <el-button class="btn-default send" type="text" @click="toggleInboxDialog">

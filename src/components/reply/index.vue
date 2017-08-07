@@ -98,7 +98,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'users'
+      'users',
+      'profile'
     ])
   },
   methods: {
@@ -109,7 +110,16 @@ export default {
     },
     // 检测收信人是否合法
     checkReceiver(rule, value, cb) {
-      this.form.user ? cb() : cb('旅行者，收信人必须从下拉列表中选择。')
+      const user = this.form.user
+      if (user) {
+        if (user === this.profile.id) {
+          cb('旅行者，收信人不能为自己呀。:-O')
+        } else {
+          cb()
+        }
+      } else {
+        cb('旅行者，收信人必须从下拉列表中选择。')
+      }
     },
     // 列表项被选择时的事件
     handleSelect(item) {
