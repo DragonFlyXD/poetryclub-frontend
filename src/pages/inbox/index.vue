@@ -27,8 +27,8 @@
                   <div class="info">
                     <span class="created-at">{{ message.publish_time }}</span>
                     <div class="item-button-group">
-                      <el-button class="btn-pub" @click="readDialog(message.dialogUrl)">查看对话</el-button>
-                      <el-button class="btn-can" :data-did="message.dialog_id" @click="_deleteInboxDialog">
+                      <el-button class="btn-pub" @click="dialog(message.dialogUrl)">查看对话</el-button>
+                      <el-button class="btn-can" :data-did="message.dialog_id" @click="deleteDialog">
                         <i class="fa fa-trash-o" :data-did="message.dialog_id"></i>
                       </el-button>
                     </div>
@@ -56,8 +56,8 @@
                   <div class="info">
                     <span class="created-at">{{ message.publish_time }}</span>
                     <div class="item-button-group">
-                      <el-button class="btn-pub" @click="readDialog(message.dialogUrl)">查看对话</el-button>
-                      <el-button class="btn-can" :data-did="message.dialog_id" @click="_deleteInboxDialog">
+                      <el-button class="btn-pub" @click="dialog(message.dialogUrl)">查看对话</el-button>
+                      <el-button class="btn-can" :data-did="message.dialog_id" @click="deleteDialog">
                         <i class="fa fa-trash-o" :data-did="message.dialog_id"></i>
                       </el-button>
                     </div>
@@ -120,23 +120,30 @@ export default {
     this.loadInboxMessages()
   },
   methods: {
-    // 跳转到指定对话列表
-    readDialog(dialogUrl) {
-      this.$router.push(dialogUrl)
+    // 删除对话
+    deleteDialog(e) {
+      this.$confirm('旅行者，是否要删除该对话内容', '魔王降临ING', {
+        confirmButtonText: 'YES',
+        cancelButtonText: 'NO',
+        type: 'warning',
+        customClass: 'c-confirm',
+        confirmButtonClass: 'btn-pub',
+        cancelButtonClass: 'btn-can'
+      }).then(() => {
+        this.deleteInboxDialog(Number(e.target.dataset.did))
+      })
     },
-    // 全部标志已读
-    markAsRead() {
-      console.log(this.unreadMessages)
+    // 跳转到指定对话列表
+    dialog(dialogUrl) {
+      this.$router.push(dialogUrl)
     },
     toggleReplyDialog() {
       this.dialogVisible = !this.dialogVisible
     },
-    _deleteInboxDialog(e) {
-      this.deleteInboxDialog(Number(e.target.dataset.did))
-    },
     ...mapActions([
       'loadInboxMessages',
-      'deleteInboxDialog'
+      'deleteInboxDialog',
+      'markAsRead'
     ])
   }
 }

@@ -22,6 +22,47 @@
       </el-col>
       <el-col class="actions" :span="3" >
         <template v-if="isLogined">
+          <el-popover
+            popper-class="inbox-popover"
+            ref="inbox-popover"
+            trigger="click"
+          >
+            <span class="title">全部私信</span>
+            <div
+              class="content"
+              v-for="(message,index) in allMessages"
+              v-if="allMessages.length > 0"
+              >
+              <div class="item" @click="dialog(message.dialogUrl)">
+                <img :src="message.user.avatar" alt="avatar" class="avatar">
+                <div class="main">
+                  <span class="name">{{ message.user.nickname }}</span>
+                  <span class="body">{{ message.body }}</span>
+                </div>
+              </div>
+            </div>
+            <blank-area hint="暂无私信" v-else></blank-area>
+            <footer class="footer">
+              <el-button class="btn-default send" type="text" @click="toggleInboxDialog">
+                <i class="fa fa-envelope-o"></i>
+              </el-button>
+              <el-button class="btn-default" type="text" @click="viewInbox">查看全部私信</el-button>
+              <el-dialog
+                custom-class="c-reply"
+                title="发送私信"
+                size="tiny"
+                v-model="inboxDialogVisible"
+                :modal-append-to-body="false"
+                >
+                <reply @isCancel="toggleInboxDialog"></reply>
+              </el-dialog>
+            </footer>
+          </el-popover>
+          <el-button type="text" class="inbox btn-can" v-popover:inbox-popover>
+            <el-badge :max="99" :value="unreadLength">
+              <i class="fa fa-bell"></i>
+            </el-badge>
+          </el-button>
           <el-submenu class="menu" index="8">
             <template slot="title">
               <img :src="profile.avatar" alt="avatar" class="avatar">
@@ -39,11 +80,6 @@
               <i class="fa fa-sign-out"></i>退出登录
             </el-menu-item>
           </el-submenu>
-          <el-menu-item index="9" class="inbox" :route="{name:'inbox'}">
-            <el-badge :max="99" :value="unreadLength">
-              <i class="fa fa-bell"></i>
-            </el-badge>
-          </el-menu-item>
         </template>
         <template v-else>
           <el-menu-item index="6" :route="{ name:'userLogin' }">登录</el-menu-item>
@@ -56,19 +92,27 @@
 
 <script>
 import {mapGetters, mapActions} from 'vuex'
+import BlankArea from '@/components/blankArea'
+import Reply from '@/components/reply'
 export default {
   name: 'header',
+  components: {
+    BlankArea,
+    Reply
+  },
   computed: {
     ...mapGetters([
       'isLogined',
       'unreadLength',
+      'allMessages',
       'profile'
     ])
   },
   data() {
     return {
       // 是否已经加载过用户信息
-      isLoaded: false
+      isLoaded: false,
+      inboxDialogVisible: false
     }
   },
   async created() {
@@ -89,6 +133,17 @@ export default {
     // 跳转到创作页面
     createPoem() {
       this.$router.push('/poem/create')
+    },
+    // 跳转到私信页面
+    viewInbox() {
+      this.$router.push('/inbox')
+    },
+    // 跳转到指定的对话列表
+    dialog(dialogUrl) {
+      this.$router.push(dialogUrl)
+    },
+    toggleInboxDialog() {
+      this.inboxDialogVisible = !this.inboxDialogVisible
     },
     focusSearchBar(e) {
       e.target.parentNode.className += ' searchbar-act'
@@ -145,8 +200,8 @@ export default {
       &:hover, &:focus
         bdco(Green,Green)
   .actions
+    fj()
     .menu
-      z-index 999
       border 0
       .el-submenu__title
         &:hover
@@ -170,19 +225,13 @@ export default {
           border-bottom 0
           transform translateY(-3px)
     .inbox
-      padding 0
-      border none
-      color Silver
-      &:hover
-        color Green
-        transform none
-        transition all .2s
+      z-index 999
       .el-badge
         &>sup
           top 20px
           background-color Green
         &>i
-          font-size 1.5em
+          font-size 1.8em
     .is-active
       .el-submenu__title
         border-bottom-left-radius 70%
@@ -192,4 +241,47 @@ export default {
         transition all .2s
       i
         color Green
+.inbox-popover
+  width 25%
+  .title
+    display block
+    padding 5px 0 10px 0
+    border-bottom 1px solid Extra-Light-Grey
+    font-size 1.2em
+    text-align center
+    color Silver
+  .content
+    padding 10px 0 5px 0
+    .item
+      fj()
+      box-sizing border-box
+      height 68px
+      padding 10px
+      &:hover
+        border-radius 5px
+        background-color Dark-White
+        cursor pointer
+      .avatar
+        wh(40px, 40px)
+        border-radius 3px
+        box-shadow 0 1px 1px rgba(0,0,0,.2)
+      .main
+        margin-left 20px
+        line-height 2em
+        span
+          display block
+        .name
+          font-size 1.2em
+          color Green
+        .body
+          overflow hidden
+          height 24px
+          color Silver
+  .footer
+    fj(space-between)
+    margin-top 10px
+    padding 0 10px
+    border-top 1px solid Extra-Light-Grey
+    .send
+      font-size 2em
 </style>

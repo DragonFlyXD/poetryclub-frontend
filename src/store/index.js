@@ -4,6 +4,7 @@ import actions from './actions'
 import * as getters from './getters'
 import mutations from './mutations'
 import state from './state'
+import user from './modules/user'
 import profile from './modules/profile'
 import inbox from './modules/inbox'
 import poem from './modules/poem'
@@ -17,6 +18,7 @@ const store = new Vuex.Store({
   getters,
   mutations,
   modules: {
+    user,
     profile,
     inbox,
     poem,

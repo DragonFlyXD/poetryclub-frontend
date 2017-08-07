@@ -56,8 +56,7 @@ Vue.component('receiver-item', {
     }
   }
 })
-import api from '@/api'
-import { mapMutations } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'reply',
   data() {
@@ -89,7 +88,7 @@ export default {
             trigger: 'blur'
           },
           {
-            min: 1,
+            min: 6,
             message: '私信内容至少为6个字符。',
             trigger: 'blur'
           }
@@ -97,22 +96,16 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'users'
+    ])
+  },
   methods: {
     // 远程搜索用户
-    fetchReceiver(queryStr, cb) {
-      api.get(`user/search?query=${queryStr}`).then(response => {
-        this.receivers = response.data
-        cb(this.receivers)
-      }).catch(error => {
-        this.$message({
-          message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
-          type: 'error',
-          customClass: 'c-msg',
-          duration: 0,
-          showClose: true
-        })
-        Promise.reject(error)
-      })
+    async fetchReceiver(queryStr, cb) {
+      await this.fetchUser(queryStr)
+      cb(this.users)
     },
     // 检测收信人是否合法
     checkReceiver(rule, value, cb) {
@@ -124,52 +117,25 @@ export default {
       this.form.user = item.user_id
     },
     // 提交私信表单
-    submitForm() {
+    async submitForm() {
       this.isLoading = true
-      this.$refs['form'].validate(valid => {
+      await this.$refs['form'].validate(valid => {
         if (valid) {
-          api.post('inbox', this.form).then(response => {
-            this.isLoading = false
-            if (response.data.sent) {
-              this.STORE_INBOX_MESSAGE(response.data.message)
-              this.$message({
-                message: '私信发送成功。',
-                type: 'success',
-                customClass: 'c-msg'
-              })
-
-              // 清空私信表单
-              this.form = {}
-              // 关闭对话框
-              this.toggleDialog()
-            } else {
-              this.$message({
-                message: '私信发送失败。',
-                type: 'success',
-                customClass: 'c-msg',
-                duration: 0,
-                showClose: true
-              })
-            }
-          }).catch(error => {
-            this.isLoading = false
-            this.$message({
-              message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
-              type: 'error',
-              customClass: 'c-msg',
-              duration: 0,
-              showClose: true
-            })
-            Promise.reject(error)
-          })
+          this.storeInboxMessage(this.form)
         }
       })
+      this.isLoading = false
+      // 清空私信表单
+      this.form = {}
+      // 关闭对话框
+      this.toggleDialog()
     },
     toggleDialog() {
       this.$emit('isCancel')
     },
-    ...mapMutations([
-      'STORE_INBOX_MESSAGE'
+    ...mapActions([
+      'storeInboxMessage',
+      'fetchUser'
     ])
   }
 }

@@ -29,8 +29,12 @@ export const LOAD_INBOX_MESSAGES = 'inbox/LOAD_INBOX_MESSAGES'
 export const LOAD_INBOX_DIALOG = 'inbox/LOAD_INBOX_DIALOG'
 export const DELETE_INBOX_DIALOG = 'inbox/DELETE_INBOX_DIALOG'
 export const DELETE_INBOX_MESSAGE = 'inbox/DELETE_INBOX_MESSAGES'
-// 存储私信内容
+// 存储私信内容、对话内容
 export const STORE_INBOX_MESSAGE = 'inbox/STORE_INBOX_MESSAGE'
 export const STORE_DIALOG_MESSAGE = 'inbox/STORE_DIALOG_MESSAGE'
+// 全部未读私信标志已读
+export const MARK_READ_INBOX = 'inbox/MARK_READ_INBOX'
+// 远程搜索用户
+export const FETCH_USER = 'user/FETCH_USER'
 // 加载检索的诗文列表
 export const SCOUT_POEMLIST = 'scout/SCOUT_POENLIST'

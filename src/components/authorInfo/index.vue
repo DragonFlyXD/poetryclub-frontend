@@ -92,15 +92,19 @@
         <span class="title">收信人：</span>
         <span class="receiver">{{ page.user.nickname }}</span>
       </header>
-      <el-input
-        class="c-form"
-        type="textarea"
-        resize="none"
-        :autosize="{ minRows: 4, maxRows: 6}"
-      ></el-input>
+      <el-form class="c-form" ref="form" :model="form" :rules="rules">
+        <el-form-item prop="body">
+          <el-input
+            v-model="form.body"
+            type="textarea"
+            resize="none"
+            :autosize="{ minRows: 4, maxRows: 6}"
+          ></el-input>
+        </el-form-item>
+      </el-form>
       <footer slot="footer">
         <el-button class="btn-default" type="text" @click="toggleReplyDialog">取消</el-button>
-        <el-button class="btn-default">确定</el-button>
+        <el-button class="btn-default" :loading="isLoading" @click="submitForm">确定</el-button>
       </footer>
     </el-dialog>
   </div>
@@ -124,10 +128,29 @@ export default {
   },
   data() {
     return {
-      isOriginal: false,
       replyDialogVisible: false,
       worksDialogVisible: false,
-      isMoreWorks: false
+      // 是否有更多作品( > 5)
+      isMoreWorks: false,
+      form: {
+        body: '',
+        user: this.page.user.id
+      },
+      rules: {
+        body: [
+          {
+            required: true,
+            message: '私信内容不能为空。',
+            trigger: 'blur'
+          },
+          {
+            min: 6,
+            message: '私信内容至少为6个字符。',
+            trigger: 'blur'
+          }
+        ]
+      },
+      isLoading: false
     }
   },
   computed: {
@@ -145,6 +168,20 @@ export default {
     ])
   },
   methods: {
+    // 提交私信表单
+    async submitForm() {
+      this.isLoading = true
+      await this.$refs['form'].validate(valid => {
+        if (valid) {
+          this.storeInboxMessage(this.form)
+        }
+      })
+      this.isLoading = false
+      // 清空表单内容
+      this.form.body = ''
+      // 关闭对话框
+      this.toggleReplyDialog()
+    },
     toggleReplyDialog() {
       this.replyDialogVisible = !this.replyDialogVisible
     },
@@ -152,7 +189,8 @@ export default {
       this.worksDialogVisible = !this.worksDialogVisible
     },
     ...mapActions([
-      'toggleAuthorFollowed'
+      'toggleAuthorFollowed',
+      'storeInboxMessage'
     ])
   }
 }
