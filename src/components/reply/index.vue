@@ -127,18 +127,18 @@ export default {
       this.form.user = item.user_id
     },
     // 提交私信表单
-    async submitForm() {
-      this.isLoading = true
-      await this.$refs['form'].validate(valid => {
+    submitForm() {
+      this.$refs['form'].validate(async valid => {
         if (valid) {
-          this.storeInboxMessage(this.form)
+          this.isLoading = true
+          await this.storeInboxMessage(this.form)
+          this.isLoading = false
+          // 清空私信表单
+          this.form = {}
+          // 关闭对话框
+          this.toggleDialog()
         }
       })
-      this.isLoading = false
-      // 清空私信表单
-      this.form = {}
-      // 关闭对话框
-      this.toggleDialog()
     },
     toggleDialog() {
       this.$emit('isCancel')

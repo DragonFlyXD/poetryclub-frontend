@@ -30,17 +30,13 @@ export default {
     }
   },
   created() {
-    !this.isLoaded && this.getLocalData()
+    this.getLocalData()
   },
   methods: {
     getLocalData() {
-      this.TOGGLE_LOADING_STATUS()
-      this.isLoaded = true
       api.get('home').then(response => {
-        this.TOGGLE_LOADING_STATUS()
         this.localData = response.data
       }).catch(error => {
-        this.TOGGLE_LOADING_STATUS()
         this.$message({
           message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
           type: 'error',

@@ -105,7 +105,6 @@
 import api from '@/api'
 import c from '@/common/js'
 import Dot from '@/components/dot'
-import { mapGetters } from 'vuex'
 export default {
   name: 'userRegister',
   components: {
@@ -205,11 +204,6 @@ export default {
       isRegistered: false,  // 是否已注册
       isSuccess: false   // 是否注册成功
     }
-  },
-  computed: {
-    ...mapGetters([
-      'isLogined'
-    ])
   },
   created() {
     c.logged()

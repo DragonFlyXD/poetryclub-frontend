@@ -14,10 +14,16 @@ import UserReset from '@/pages/user/Reset.vue'
 import UserFollow from '@/pages/user/Follow.vue'
 import UserWork from '@/pages/user/Work.vue'
 
+// OAuth相关
+import OAuthKey from '@/pages/oauth/key.vue'
+
 // 诗库相关
 import Poem from '@/pages/poem'
 import PoemView from '@/pages/poem/view.vue'
 import CreatePoem from '@/pages/poem/create.vue'
+
+// 诗文品鉴相关
+import CreateApprec from '@/pages/appreciation/create'
 
 // 私信相关
 import Inbox from '@/pages/inbox'
@@ -88,6 +94,10 @@ const router = new Router({
       name: 'userWork',
       component: UserWork
     }, {
+      path: '/oauth/key',
+      name: 'oauthKey',
+      component: OAuthKey
+    }, {
       path: '/poem',
       name: 'poem',
       component: Poem
@@ -99,6 +109,13 @@ const router = new Router({
       path: '/poem/create',
       name: 'createPoem',
       component: CreatePoem,
+      meta: {
+        requiresAuth: true
+      }
+    }, {
+      path: '/poem/:poem_id(\\d+)/appreciation/create',
+      name: 'createApprec',
+      component: CreateApprec,
       meta: {
         requiresAuth: true
       }

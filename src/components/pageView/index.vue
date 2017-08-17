@@ -41,7 +41,7 @@
           effect="light"
           :openDelay="1000"
         >
-          <el-button>
+          <el-button @click="createApprec(page.id)">
             <i class="fa fa-pencil-square-o"></i>
           </el-button>
         </el-tooltip>

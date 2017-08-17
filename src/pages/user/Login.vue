@@ -28,11 +28,17 @@
         </el-form-item>
       </el-form>
       <div class="text-line-35">第三方登录</div>
-      <div class="oauth-box">
-        <el-button><i class="fa fa-qq"></i></el-button>
-        <el-button><i class="fa fa-weixin"></i></el-button>
-        <el-button><i class="fa fa-weibo"></i></el-button>
-        <el-button><i class="fa fa-github"></i></el-button>
+      <div class="oauth">
+        <div class="oauth-box">
+          <el-button :loading="isLoading" @click="weibo">
+            <i class="fa fa-weibo"></i>
+          </el-button>
+        </div>
+        <div class="oauth-box">
+          <el-button :loading="isLoading" @click="github">
+            <i class="fa fa-github"></i>
+          </el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -41,7 +47,7 @@
 <script>
 import api from '@/api'
 import c from '@/common/js'
-import { mapMutations, mapGetters, mapActions } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 export default {
   name: 'userLogin',
   data() {
@@ -66,18 +72,23 @@ export default {
             trigger: 'blur'
           }
         ]
-      }
+      },
+      isLoading: false
     }
-  },
-  computed: {
-    ...mapGetters([
-      'isLogined'
-    ])
   },
   created() {
     c.logged()
   },
   methods: {
+    /* 第三方登录 */
+    // 微博
+    weibo() {
+      location.replace('http://www.dragonflyxd.com/api/oauth/weibo')
+    },
+    // github
+    github() {
+      location.replace('http://www.dragonflyxd.com/api/oauth/github')
+    },
     // 验证表单
     submitForm() {
       this.$refs['form'].validate(valid => {
@@ -111,14 +122,7 @@ export default {
               type: 'success',
               customClass: 'c-msg'
             })
-            // 存储 ACCESS_TOKEN 进 localstorage
-            window.localStorage.setItem('ACCESS_TOKEN', response.data.access_token)
-            // 更改登录状态
-            this.CHECKOUT_LOGIN_STATUS()
-            // 加载个人信息
-            this.loadProfile()
-            // 跳转到首页
-            this.$router.replace('/')
+            this.successLogin(response.data.access_token)
           }).catch(error => {
             this.TOGGLE_LOADING_STATUS()
             this.$message({
@@ -133,6 +137,17 @@ export default {
         }
         return false
       })
+    },
+    // 成功登录后的操作
+    successLogin(token) {
+      // 存储 ACCESS_TOKEN 进 localstorage
+      window.localStorage.setItem('ACCESS_TOKEN', token)
+      // 更改登录状态
+      this.CHECKOUT_LOGIN_STATUS()
+      // 加载个人信息
+      this.loadProfile()
+      // 跳转到首页
+      this.$router.replace('/')
     },
     ...mapMutations([
       'TOGGLE_LOADING_STATUS',
@@ -157,15 +172,17 @@ export default {
         fj(space-between)
       .publish
         width 100%
-    .oauth-box
-      fj(center)
+    .oauth
+      fj(space-between)
       margin 20px 0
-      &>button
-        font-size 1.3em
-        border-radius 50%
-        bdco(Green,Green)
-        transition all .2s ease
-        &:hover,&:focus
-          border-radius 5px
-          bc(Green,White)
+      .oauth-box
+        &>button
+          font-size 1.3em
+          border-radius 50%
+          bdco(Silver,Silver)
+          transition all .2s ease
+          &:hover,&:focus
+            border-radius 5px
+            border-color Green
+            bc(Green,White)
 </style>
