@@ -62,7 +62,7 @@ import {
 } from 'vuex'
 import api from '@/api'
 export default {
-  name: 'emailVerify',
+  name: 'emailRegister',
   data() {
     return {
       // 是否验证成功

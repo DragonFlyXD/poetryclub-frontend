@@ -215,7 +215,7 @@ export default {
         response.data.name ? cb(new Error('用户名已经存在。')) : cb()
       })
     },
-    // 验证用户名是否存在
+    // 验证邮箱是否存在
     validateEmail(r, v, cb) {
       api.post('user/register', this.form).then(response => {
         response.data.email ? cb(new Error('邮箱已经存在。')) : cb()
@@ -243,12 +243,13 @@ export default {
     },
     // 提交表单
     submitForm() {
-      this.isLoading = true
       this.$refs['form'].validate(valid => {
         if (valid) {
           // 指定请求为正式提交表单
           this.form.is_submit = true
+          this.isLoading = true
           api.post('user/register', this.form).then(response => {
+            this.isLoading = false
             // 如果用户名含有非法字符
             if (response.data.error) {
               if (response.data.error.http_code === 400) {
@@ -269,13 +270,13 @@ export default {
             }
             this.alertVisible = true
           }).catch(error => {
+            this.isLoading = false
             this.$message({message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~', type: 'error', customClass: 'c-msg', duration: 0, showClose: true})
             Promise.reject(error)
           })
         }
         return false
       })
-      this.isLoading = false
     },
     showDialog() {
       this.dialogVisible = !this.dialogVisible

@@ -20,7 +20,7 @@
             <el-checkbox
               v-model="form.isRemember"
             >自动登录</el-checkbox>
-            <el-button type="text">忘记密码❤️</el-button>
+            <el-button type="text" @click="forget">忘记密码❤️</el-button>
           </div>
         </el-form-item>
         <el-form-item>
@@ -88,6 +88,10 @@ export default {
     // github
     github() {
       location.replace('http://www.dragonflyxd.com/api/oauth/github')
+    },
+    // 跳转到忘记密码页面
+    forget() {
+      this.$router.push({ name: 'passwordForget' })
     },
     // 验证表单
     submitForm() {

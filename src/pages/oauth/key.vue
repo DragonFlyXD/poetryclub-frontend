@@ -5,7 +5,7 @@
 import c from '@/common/js'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-  name: 'oauthKey',
+  name: 'authKey',
   computed: {
     ...mapGetters([
       'isLogined'
@@ -43,6 +43,3 @@ export default {
   }
 }
 </script>
-
-<style lang="stylus">
-</style>

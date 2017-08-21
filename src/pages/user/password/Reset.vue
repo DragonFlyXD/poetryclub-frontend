@@ -35,7 +35,7 @@
 <script>
 import api from '@/api'
 export default {
-  name: 'userReset',
+  name: 'passwordReset',
   data() {
     return {
       isLoading: false,
@@ -83,10 +83,11 @@ export default {
   },
   methods: {
     submitForm() {
-      this.isLoading = true
       this.$refs.form.validate(valid => {
         if (valid) {
-          api.post('/user/reset', this.form).then(response => {
+          this.isLoading = true
+          api.post('/user/password/reset', this.form).then(response => {
+            this.isLoading = false
             if (response.data.reset) {
               this.isReset = true
               this.$message({
@@ -102,6 +103,7 @@ export default {
               })
             }
           }).catch(error => {
+            this.isLoading = false
             this.$message({
               message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
               type: 'error',
@@ -114,7 +116,6 @@ export default {
         }
         return false
       })
-      this.isLoading = true
     },
     validatePassword(rule, value, cb) {
       if (value === '') {
@@ -129,7 +130,7 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-@import '../../common/stylus/common'
+@import '../../../common/stylus/common'
 
 .df-reset
   fj(center)

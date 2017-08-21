@@ -10,9 +10,13 @@ import Home from '@/pages/home'
 import UserLogin from '@/pages/user/Login.vue'
 import UserRegister from '@/pages/user/Register.vue'
 import UserProfile from '@/pages/user/Profile.vue'
-import UserReset from '@/pages/user/Reset.vue'
 import UserFollow from '@/pages/user/Follow.vue'
 import UserWork from '@/pages/user/Work.vue'
+
+// 密码相关
+import PasswordReset from '@/pages/user/password/Reset.vue'
+import PasswordForget from '@/pages/user/password/Forget.vue'
+import PasswordVerify from '@/pages/user/password/Verify.vue'
 
 // OAuth相关
 import OAuthKey from '@/pages/oauth/key.vue'
@@ -33,7 +37,7 @@ import InboxDialog from '@/pages/inbox/Dialog.vue'
 import Scout from '@/pages/scout'
 
 // 邮件相关
-import Email from '@/pages/email'
+import EmailRegister from '@/pages/email/Register.vue'
 
 // 反馈
 import Feedback from '@/pages/feedback'
@@ -71,12 +75,20 @@ const router = new Router({
         requiresAuth: true
       }
     }, {
-      path: '/user/reset',
-      name: 'userReset',
-      component: UserReset,
+      path: '/user/password/reset',
+      name: 'passwordReset',
+      component: PasswordReset,
       meta: {
         requiresAuth: true
       }
+    }, {
+      path: '/user/password/forget',
+      name: 'passwordForget',
+      component: PasswordForget
+    }, {
+      path: '/user/password/reset/:token',
+      name: 'passwordVerify',
+      component: PasswordVerify
     }, {
       path: '/user/:name([\\u4E00-\\u9FFFa-zA-Z0-9_-]{2,20})',
       name: 'userCenter',
@@ -94,8 +106,8 @@ const router = new Router({
       name: 'userWork',
       component: UserWork
     }, {
-      path: '/oauth/key',
-      name: 'oauthKey',
+      path: '/auth/key',
+      name: 'authKey',
       component: OAuthKey
     }, {
       path: '/poem',
@@ -138,9 +150,9 @@ const router = new Router({
       name: 'scout',
       component: Scout
     }, {
-      path: '/email/verify',
-      name: 'emailVerify',
-      component: Email
+      path: '/email/register/verify',
+      name: 'emailRegister',
+      component: EmailRegister
     }, {
       path: '/feedback',
       name: 'feedback',

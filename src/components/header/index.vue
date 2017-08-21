@@ -74,7 +74,7 @@
             <el-menu-item index="8-2">
               <i class="fa fa-cog"></i>账户设置
             </el-menu-item>
-            <el-menu-item index="8-5" :route="{ name: 'userReset'}">
+            <el-menu-item index="8-5" :route="{ name: 'passwordReset'}">
               <i class="fa fa-paper-plane"></i>修改密码
             </el-menu-item>
             <el-menu-item index="8-6" :route="{ path:'/' }" @click.native="logout">
