@@ -15,6 +15,11 @@
         <span v-else>
           <i class="fa fa-lemon-o"></i>{{ page.dynasty }}
         </span>
+        <el-button
+          class="btn-can edit"
+          v-if="page.user_id === profile.id"
+          @click="editPoem"
+        >编辑</el-button>
       </div>
     </header>
     <div class="body">
@@ -95,7 +100,7 @@
 
 <script>
 import {
-  mapActions
+  mapActions, mapGetters
 } from 'vuex'
 export default {
   name: 'pageView',
@@ -118,6 +123,11 @@ export default {
       isOriginal: false,
       rating: 0
     }
+  },
+  computed: {
+    ...mapGetters([
+      'profile'
+    ])
   },
   methods: {
     toggleVoted(id) {
@@ -142,6 +152,9 @@ export default {
         this.storePoemRated(rating)
       }
     },
+    editPoem() {
+      this.$router.push(this.$router.currentRoute.path + '/edit')
+    },
     ...mapActions([
       'togglePoemVoted',
       'togglePoemFavored',
@@ -159,6 +172,8 @@ export default {
   .header
     .info
       margin 5px 0
+      .edit
+        float right
       .name
         text-decoration none
         color Green

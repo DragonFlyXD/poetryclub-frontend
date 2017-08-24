@@ -51,9 +51,8 @@
         <el-button
         class="publish"
         :loading="isLoading"
-        :disabled="isDisabled"
         @click="submitForm"
-        >发表作品</el-button>
+        >{{ isEditPage ? '更新作品' : '发表作品' }}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -61,7 +60,7 @@
 
 <script>
 import api from '@/api'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters, mapActions } from 'vuex'
 import {
   quillEditor
 } from 'vue-quill-editor'
@@ -72,6 +71,7 @@ export default {
   },
   data() {
     return {
+      isEditPage: false,  // 是否编辑页面
       form: {
         title: '', // 标题
         category: '', // 分类名
@@ -86,7 +86,6 @@ export default {
         placeholder: '诗文内容，支持Markdown语法。'
       },
       isLoading: false, // 按钮是否在加载
-      isDisabled: false, // 按钮是否禁用
       dialogVisible: false,
       rules: { // 表单验证规则
         title: [
@@ -121,16 +120,51 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'poem'
+    ])
+  },
+  created() {
+    this.checkoutPage()
+  },
   methods: {
+    async checkoutPage() {
+      const route = this.$router.currentRoute.name
+      // 若为编辑页面
+      if (route === 'editPoem') {
+        this.isEditPage = true
+        const poemId = this.$router.currentRoute.params.poem_id
+        // 加载待编辑诗文的内容
+        await this.loadPoem(`poem/${poemId}`)
+        // 远程获取分类
+        await this.fetchCategory()
+        // 表单项集合
+        const formItems = ['title', 'dynamicTags', 'category', 'body']
+        // 填充表单数据
+        formItems.map(item => {
+          if (this.poem[item]) {
+            this.form[item] = this.poem[item]
+            return
+          }
+          // 若为诗文标签
+          if (item === 'dynamicTags' && this.poem['tags'].length > 0) {
+            this.poem['tags'].forEach(item => {
+              this.form['dynamicTags'].push(item.name)
+            })
+          }
+        })
+      }
+    },
     // 远程获取分类列表
-    async fetchCategory(queryStr, cb) {
+    async fetchCategory(queryStr = '', cb) {
       await api.get(`category?query=${queryStr}`).then(response => {
         this.categories = response.data.data.map(item => {
           item['value'] = item['name']
           return item
         })
       })
-      cb(this.categories)
+      cb && cb(this.categories)
     },
     // 检验分类是否合法
     checkCategory(rule, value, cb) {
@@ -178,54 +212,85 @@ export default {
       this.$refs['form'].validate(async valid => {
         if (valid) {
           this.isLoading = true
-          await api.post('poem', this.form).then(response => {
-            this.isLoading = false
-            // 诗文创建成功
-            if (response.data.created) {
-              // 将新创建的诗文添加进首页中
-              this.STORE_POEM(response.data.poem)
-              // 禁用按钮
-              this.isDisabled = true
+          // 若为编辑诗文页面
+          if (this.isEditPage) {
+            const poemId = this.poem.id
+            await api.put(`poem/${poemId}`, this.form).then(response => {
+              this.isLoading = false
+              if (response.data.updated) {
+                this.$router.push(`/poem/${poemId}`)
+                this.$message({
+                  message: '诗文更新成功。',
+                  type: 'success',
+                  customClass: 'c-msg'
+                })
+              } else {
+                this.$message({
+                  message: '诗文创建失败。',
+                  type: 'error',
+                  customClass: 'c-msg'
+                })
+              }
+            }).catch(error => {
+              this.isLoading = false
               this.$message({
-                message: '诗文创建成功。',
-                type: 'success',
-                customClass: 'c-msg'
-              })
-              // 重定向到诗文页
-              setTimeout(_ => {
-                this.$router.push('/poem')
-              }, 3000)
-            } else if (response.status === 422) {
-              // 参数错误
-              this.$message({
-                message: response.statusText,
+                message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
                 type: 'error',
-                customClass: 'c-msg'
+                customClass: 'c-msg',
+                duration: 0,
+                showClose: true
               })
-            } else {
-              this.$message({
-                message: response.data.error.message,
-                type: 'error',
-                customClass: 'c-msg'
-              })
-            }
-          }).catch(error => {
-            this.isLoading = false
-            this.$message({
-              message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
-              type: 'error',
-              customClass: 'c-msg',
-              duration: 0,
-              showClose: true
+              Promise.reject(error)
             })
-            Promise.reject(error)
-          })
+          } else {
+            // 若为创建诗文页面
+            await api.post('poem', this.form).then(response => {
+              this.isLoading = false
+              // 诗文创建成功
+              if (response.data.created) {
+                // 将新创建的诗文添加进首页中
+                this.STORE_POEM(response.data.poem)
+                this.$router.push(`/poem/${response.data.poem.id}`)
+                this.$message({
+                  message: '诗文创建成功。',
+                  type: 'success',
+                  customClass: 'c-msg'
+                })
+              } else if (response.status === 422) {
+                // 参数错误
+                this.$message({
+                  message: response.statusText,
+                  type: 'error',
+                  customClass: 'c-msg'
+                })
+              } else {
+                this.$message({
+                  message: response.data.error.message,
+                  type: 'error',
+                  customClass: 'c-msg'
+                })
+              }
+            }).catch(error => {
+              this.isLoading = false
+              this.$message({
+                message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
+                type: 'error',
+                customClass: 'c-msg',
+                duration: 0,
+                showClose: true
+              })
+              Promise.reject(error)
+            })
+          }
         }
         return false
       })
     },
     ...mapMutations([
       'STORE_POEM'
+    ]),
+    ...mapActions([
+      'loadPoem'
     ])
   }
 }

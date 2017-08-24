@@ -118,6 +118,13 @@ const router = new Router({
       name: 'poemView',
       component: PoemView
     }, {
+      path: '/poem/:poem_id(\\d+)/edit',
+      name: 'editPoem',
+      component: CreatePoem,
+      meta: {
+        requiresAuth: true
+      }
+    }, {
       path: '/poem/create',
       name: 'createPoem',
       component: CreatePoem,
