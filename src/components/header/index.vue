@@ -4,7 +4,7 @@
       <el-col class="nav" :span="8">
         <el-menu-item index="1" :route="{ name:'home' }">首页</el-menu-item>
         <el-menu-item index="2" :route="{ name:'poem' }">诗库</el-menu-item>
-        <el-menu-item index="4" :route="{ name:'discuss' }">梦门</el-menu-item>
+        <el-menu-item index="4" :route="{ name:'appreciation' }">梦门</el-menu-item>
         <el-menu-item index="5" :route="{ name:'feedback' }">反馈</el-menu-item>
       </el-col>
       <el-col class="searchbar-wrapper" :span="7">
@@ -18,7 +18,7 @@
           @blur="blurSearchBar"
           @focus="focusSearchBar"
         ></el-input>
-        <el-button class="create" @click="createPoem">创作</el-button>
+        <el-button class="create" @click="toggleCreateDialog">创作</el-button>
       </el-col>
       <el-col class="actions" :span="3" >
         <template v-if="isLogined">
@@ -88,6 +88,17 @@
         </template>
       </el-col>
     </el-row>
+    <el-dialog
+      class="create-dialog c-dialog"
+      title="创作吧, 骚年~"
+      size="tiny"
+      :visible.sync="createDialogVisible"
+    >
+      <div class="main">
+        <el-button>诗文</el-button>
+        <el-button>品鉴</el-button>
+      </div>
+    </el-dialog>
   </el-menu>
 </template>
 
@@ -113,6 +124,7 @@ export default {
     return {
       // 是否已经加载过用户信息
       isLoaded: false,
+      createDialogVisible: false,
       inboxDialogVisible: false
     }
   },
@@ -142,6 +154,9 @@ export default {
     // 跳转到指定的对话列表
     dialog(dialogUrl) {
       this.$router.push(dialogUrl)
+    },
+    toggleCreateDialog() {
+      this.createDialogVisible = !this.createDialogVisible
     },
     toggleInboxDialog() {
       this.inboxDialogVisible = !this.inboxDialogVisible

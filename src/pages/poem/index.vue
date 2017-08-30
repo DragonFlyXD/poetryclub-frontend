@@ -14,7 +14,6 @@
         v-if="isLastPage"
       >旅行者，你已至诗词小筑的终焉。:)</span>
     </div>
-    <div class="side"></div>
   </div>
 </template>
 
@@ -92,17 +91,14 @@ export default {
 @import '../../common/stylus/common'
 
 .df-poem
-  fj(center)
+  fj(center,center)
   margin-top 20px
   .main
     width 50%
     position relative
-    margin-right 50px
     .spinner
       position absolute
       width 100%
     .last-page
       color Red
-  .side
-    width 20%
 </style>

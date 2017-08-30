@@ -195,7 +195,6 @@ export default {
         max-height 120px
         overflow hidden
         padding-bottom 20px
-        text-overflow ellipsis
         line-height 2em
         cursor pointer
         .ellipsis
@@ -205,12 +204,13 @@ export default {
           margin 0
       .is-collapse
         max-height none
+        word-break break-all
         *
           display block
      .footer
       fj(space-between)
       position absolute
-      bottom 0
+      bottom 5px
       left 0
       width 100%
       .feedback

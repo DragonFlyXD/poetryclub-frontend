@@ -11,18 +11,25 @@
       v-if="localData.poem"
       ></sub-poem>
     </div>
-    <div class="side"></div>
+    <div class="side">
+      <div class="billboard">
+        <h3><i class="fa fa-users"></i>RAN AUTHORS</h3>
+      </div>
+      <authorList :authors="localData.author"></authorList>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import api from '@/api'
 import SubPoem from '@/components/subPoem'
-import { mapMutations } from 'vuex'
+import AuthorList from '@/components/authorList'
 export default {
   name: 'home',
   components: {
-    SubPoem
+    SubPoem,
+    AuthorList
   },
   data() {
     return {
@@ -60,15 +67,15 @@ export default {
 .df-home
   fj(center)
   margin-top 20px
+  .billboard
+    border-bottom 1px solid Extra-Light-Grey
+    color Silver
+    i
+      margin-right 20px
+      color Red
   .main
     width 50%
     margin-right 50px
-    .billboard
-      border-bottom 1px solid Extra-Light-Grey
-      color Silver
-      i
-        margin-right 20px
-        color Red
   .side
     width 20%
 </style>

@@ -185,6 +185,7 @@ export default {
          margin-right 5px
   .body
     .content
+      word-break break-all
       line-height 2em
   .footer
     margin-top 20px

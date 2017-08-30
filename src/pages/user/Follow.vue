@@ -19,13 +19,13 @@
               </router-link>
               <p class="signature">{{ item.profile.signature }}</p>
               <div class="meta">
-                <router-link :to="{ path: '/user/'+item.name+'/works' }">
+                <router-link :to="{ path: `/user/${item.name}/works` }">
                   <span>{{ item.works_count }}</span>作品
                 </router-link>
-                <router-link :to="{ path: '/user/'+item.name+'/followers' }">
+                <router-link :to="{ path: `/user/${item.name}/followers` }">
                   <span>{{ item.followers_count }}</span>关注
                 </router-link>
-                <router-link class="last" :to="{ path: '/user/'+item.name+'/followings' }">
+                <router-link class="last" :to="{ path: `/user/${item.name}/followings` }">
                   <span>{{ item.followings_count }}</span>粉丝
                 </router-link>
               </div>
