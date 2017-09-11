@@ -37,12 +37,10 @@ const actions = {
       commit(types.TOGGLE_LOADING_STATUS, quit)
       // 获取诗文列表数据
       commit(types.LOAD_POEMLIST, response.data.data)
-      if (!state.poemCurrentPage) {
-        // 获取分页最后一页
-        commit(types.STORE_POEM_LASTPAGE, response.data.last_page)
-        // 获取当前页数
-        commit(types.STORE_POEM_CURRENTPAGE, response.data.current_page)
-      }
+      // 获取分页最后一页
+      !state.poemCurrentPage && commit(types.STORE_POEM_LASTPAGE, response.data.last_page)
+      // 获取当前页数
+      commit(types.STORE_POEM_CURRENTPAGE, response.data.current_page)
     }).catch(error => {
       commit(types.TOGGLE_LOADING_STATUS, quit)
       Message({message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~', type: 'error', customClass: 'c-msg', duration: 0, showClose: true})
@@ -198,9 +196,6 @@ const mutations = {
   },
   [types.TOGGLE_POEM_AUTHOR_FOLLOWED](state, followed) {
     state.poemStatus.followed = followed
-  },
-  [types.STORE_POEM](state, poem) {
-    state.poems.unshift(poem)
   },
   [types.STORE_POEM_RATING](state, rated) {
     state.poemStatus.rated = rated

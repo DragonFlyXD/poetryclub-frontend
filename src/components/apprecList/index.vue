@@ -9,7 +9,7 @@
       >
         <div class="left">
           <strong class="title">{{ apprec.title }}</strong>
-          <div class="content">{{ apprec.body }}</div>
+          <div class="content" v-html="apprec.body"></div>
         </div>
         <div class="right">
           <img :src="apprec.user.avatar" alt="avatar" class="avatar">

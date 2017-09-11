@@ -36,12 +36,10 @@ const actions = {
       commit(types.TOGGLE_LOADING_STATUS, quit)
       // 获取品鉴列表数据
       commit(types.LOAD_APPRECLIST, response.data.data)
-      if (!state.apprecCurrentPage) {
-        // 获取分页最后一页
-        commit(types.STORE_APPREC_LASTPAGE, response.data.last_page)
-        // 获取当前页数
-        commit(types.STORE_APPREC_CURRENTPAGE, response.data.current_page)
-      }
+      // 获取分页最后一页
+      !state.apprecCurrentPage && commit(types.STORE_APPREC_LASTPAGE, response.data.last_page)
+      // 获取当前页数
+      commit(types.STORE_APPREC_CURRENTPAGE, response.data.current_page)
     }).catch(error => {
       commit(types.TOGGLE_LOADING_STATUS, quit)
       Message({message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~', type: 'error', customClass: 'c-msg', duration: 0, showClose: true})
@@ -190,9 +188,6 @@ const mutations = {
   },
   [types.TOGGLE_APPREC_AUTHOR_FOLLOWED](state, followed) {
     state.apprecStatus.followed = followed
-  },
-  [types.STORE_APPREC](state, apprec) {
-    state.apprecs.unshift(apprec)
   },
   [types.STORE_APPREC_RATING](state, rated) {
     state.apprecStatus.rated = rated

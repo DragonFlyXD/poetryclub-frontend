@@ -45,8 +45,6 @@ export const STORE_POEM_RATING = 'poem/STORE_POEM_RATING'
 export const STORE_POEM_COMMENT = 'poem/STORE_POEM_COMMENT'
 // 储存用户对诗文的品鉴状态
 export const STORE_POEM_APPRECIATED = 'poem/STORE_POEM_APPRECIATED'
-// 创建诗文
-export const STORE_POEM = 'poem/STORE_POEM'
 
 /* ------------------------------------------------------------------------ */
 
@@ -66,8 +64,6 @@ export const TOGGLE_APPREC_AUTHOR_FOLLOWED = 'apprec/TOGGLE_APPREC_AUTHOR_FOLLOW
 // 存储品鉴评分、品鉴评论
 export const STORE_APPREC_RATING = 'apprec/STORE_APPREC_RATING'
 export const STORE_APPREC_COMMENT = 'apprec/STORE_APPREC_COMMENT'
-// 创建品鉴
-export const STORE_APPREC = 'poem/STORE_APPREC'
 
 /* ------------------------------------------------------------------------ */
 

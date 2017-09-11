@@ -84,7 +84,7 @@
 
 <script>
 import api from '@/api'
-import { mapMutations, mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import {
   quillEditor
 } from 'vue-quill-editor'
@@ -237,7 +237,6 @@ export default {
     // 提交表单
     submitForm() {
       this.$refs['form'].validate(async valid => {
-        console.log(this.form)
         if (valid) {
           this.isLoading = true
           // 若为编辑诗文页面
@@ -276,8 +275,6 @@ export default {
               this.isLoading = false
               // 品鉴创建成功
               if (response.data.created) {
-                // 将新创建的品鉴添加进梦门中
-                this.STORE_APPREC(response.data.appreciation)
                 this.$router.push(`/appreciation/${response.data.appreciation.id}`)
                 this.$message({
                   message: '品鉴创建成功。',
@@ -314,9 +311,6 @@ export default {
         return false
       })
     },
-    ...mapMutations([
-      'STORE_APPREC'
-    ]),
     ...mapActions([
       'loadApprec'
     ])

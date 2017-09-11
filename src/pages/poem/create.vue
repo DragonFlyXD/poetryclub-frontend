@@ -8,13 +8,20 @@
         ></el-input>
       </el-form-item>
       <el-form-item prop="category">
-        <el-autocomplete
-          class="category"
-          placeholder="请选择一个诗文类型"
-          v-model="form.category"
+        <el-select
+          class="c-select category"
           popper-class="c-popper"
-          :fetch-suggestions="fetchCategory"
-        ></el-autocomplete>
+          v-model="form.category"
+          placeholder="请选择一个诗文类型"
+          :filter-method="fetchCategory"
+        >
+          <el-option
+            v-for="(category, index) in categories"
+            :key="index"
+            :value="category.id"
+            :label="category.name"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-tag
@@ -60,7 +67,7 @@
 
 <script>
 import api from '@/api'
-import { mapMutations, mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import {
   quillEditor
 } from 'vue-quill-editor'
@@ -104,11 +111,8 @@ export default {
         category: [
           {
             required: true,
+            type: 'number',
             message: '分类不能为空。',
-            trigger: 'change'
-          },
-          {
-            validator: this.checkCategory,
             trigger: 'change'
           }
         ],
@@ -125,7 +129,8 @@ export default {
       'poem'
     ])
   },
-  created() {
+  async created() {
+    await this.fetchCategory()
     this.checkoutPage()
   },
   methods: {
@@ -137,8 +142,6 @@ export default {
         const poemId = this.$router.currentRoute.params.poem_id
         // 加载待编辑诗文的内容
         await this.loadPoem(`poem/${poemId}`)
-        // 远程获取分类
-        await this.fetchCategory()
         // 表单项集合
         const formItems = ['title', 'dynamicTags', 'category', 'body']
         // 填充表单数据
@@ -157,19 +160,10 @@ export default {
       }
     },
     // 远程获取分类列表
-    async fetchCategory(queryStr = '', cb) {
-      await api.get(`category?query=${queryStr}`).then(response => {
-        this.categories = response.data.map(item => {
-          item['value'] = item['name']
-          return item
-        })
+    async fetchCategory() {
+      await api.get('category').then(response => {
+        this.categories = response.data
       })
-      cb && cb(this.categories)
-    },
-    // 检验分类是否合法
-    checkCategory(rule, value, cb) {
-      this.categories.some(category => category['name'] === value)
-        ? cb() : cb('旅行者，分类不能自定义，必须从下拉列表中选择。')
     },
     // 去除标签
     closeTag(tag) {
@@ -248,8 +242,6 @@ export default {
               this.isLoading = false
               // 诗文创建成功
               if (response.data.created) {
-                // 将新创建的诗文添加进首页中
-                this.STORE_POEM(response.data.poem)
                 this.$router.push(`/poem/${response.data.poem.id}`)
                 this.$message({
                   message: '诗文创建成功。',
@@ -286,9 +278,6 @@ export default {
         return false
       })
     },
-    ...mapMutations([
-      'STORE_POEM'
-    ]),
     ...mapActions([
       'loadPoem'
     ])

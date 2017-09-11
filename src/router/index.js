@@ -28,6 +28,7 @@ import CreatePoem from '@/pages/poem/create.vue'
 
 // 品鉴相关
 import Apprec from '@/pages/appreciation'
+import ApprecView from '@/pages/appreciation/view.vue'
 import CreateApprec from '@/pages/appreciation/create'
 
 // 私信相关
@@ -139,7 +140,7 @@ const router = new Router({
     }, {
       path: '/appreciation/:appreciation_id(\\d+)',
       name: 'apprecView',
-      component: Apprec
+      component: ApprecView
     }, {
       path: '/appreciation/:appreciation_id(\\d+)/edit',
       name: 'editApprec',
