@@ -1,17 +1,17 @@
 <template lang="html">
   <div class="df-subApprec">
     <header class="header">
-      <router-link class="title" :to="apprec.apprecUrl">{{ apprec.title }}</router-link>
+      <router-link class="title" :to="apprec.appreciationUrl">{{ apprec.title }}</router-link>
       <div class="refer">
         <span>源自诗文:</span>
-        <router-link class="refer-poem" :to="apprec.refer.poemUrl">{{ apprec.refer.title }}</router-link>
+        <router-link class="refer-poem" :to="apprec.poem.poemUrl">{{ apprec.poem.title }}</router-link>
       </div>
     </header>
     <div class="main-wrapper">
       <div class="main">
         <div class="info">
           <span>
-            <i class="fa fa-user"></i><router-link to="apprec.profileUrl">{{ apprec.authorName }}</router-link>
+            <i class="fa fa-user"></i><router-link :to="apprec.profileUrl">{{ apprec.authorName }}</router-link>
           </span>
           <span>
             <i class="fa fa-clock-o"></i>{{ apprec.publish_time }}
@@ -26,10 +26,16 @@
         </div>
       </div>
       <div class="side">
-        <el-button class="btn-default">
+        <el-button class="btn-act" v-if="voted" @click="toggleVoted">
+          <i class="fa fa-thumbs-up"></i>
+        </el-button>
+        <el-button class="btn-default" v-else @click="toggleVoted">
           <i class="fa fa-thumbs-o-up"></i>
         </el-button>
-        <el-button class="btn-default">
+        <el-button class="btn-act" v-if="favored" @click="toggleFavored">
+          <i class="fa fa-heart"></i>
+        </el-button>
+        <el-button class="btn-default" v-else @click="toggleFavored">
           <i class="fa fa-heart-o"></i>
         </el-button>
       </div>
@@ -59,35 +65,18 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import Comment from '@/components/comment'
 export default {
   name: 'subApprec',
-  data() {
-    return {
-      commentDialogVisible: false,
-      isExpand: false,
-      apprec: {
-        id: 1,
-        title: '雪阳',
-        apprecUrl: '/appreciation',
-        refer: {
-          title: '嘻哈之王',
-          poemUrl: '/appreciation'
-        },
-        authorName: 'dragonfly',
-        profileUrl: '/appreciation',
-        publish_time: '6分钟前',
-        pageviews_count: 12,
-        summary: 'sdasadsadasdasdasdasdsadasdadasdsa',
-        body: 'sdasadsadasdasdasdasdsadasdadasdsasdasadsadasdasdasdasdsadasdadasdsasdasadsadasdasdasdasdsadasdadasdsa',
-        comments: [],
-        comments_count: 0,
-        tags: [
-          {
-            name: 'adas'
-          }
-        ]
-      }
+  props: {
+    apprec: {
+      type: Object,
+      default: {}
     }
+  },
+  components: {
+    Comment
   },
   computed: {
     summary() {
@@ -97,9 +86,35 @@ export default {
         summary += '<span class="ellipsis">...</span>'
       }
       return summary
+    },
+    ...mapGetters([
+      'apprecStatus'
+    ])
+  },
+  data() {
+    return {
+      favored: false,  // 收藏状态
+      voted: false,    // 点赞状态
+      isExpand: false,  // 是否全部显示
+      commentDialogVisible: false
     }
   },
+  mounted() {
+    this.loadStatus()
+  },
   methods: {
+    loadStatus() {
+      this.favored = this.apprec.favored
+      this.voted = this.apprec.voted
+    },
+    async toggleVoted() {
+      await this.toggleApprecVoted(this.apprec.id)
+      this.voted = this.apprecStatus.voted
+    },
+    async toggleFavored() {
+      await this.toggleApprecFavored(this.apprec.id)
+      this.favored = this.apprecStatus.favored
+    },
     toggleExpand() {
       this.isExpand = !this.isExpand
       if (this.isExpand) {
@@ -110,7 +125,11 @@ export default {
     },
     toggleCommentDialog() {
       this.commentDialogVisible = !this.commentDialogVisible
-    }
+    },
+    ...mapActions([
+      'toggleApprecVoted',
+      'toggleApprecFavored'
+    ])
   }
 }
 </script>

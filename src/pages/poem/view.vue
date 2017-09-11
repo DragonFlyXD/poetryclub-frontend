@@ -5,6 +5,10 @@
         :page="poem"
         :status="poemStatus"
       ></page-view>
+      <apprec-list
+        v-if="poem.appreciations_count > 0"
+        :apprecs="poem.appreciations"
+      ></apprec-list>
       <comment
         :comments="poemStatus.comments"
         :modelId="poem.id"
@@ -27,6 +31,7 @@
 
 <script>
 import PageView from '@/components/pageView'
+import ApprecList from '@/components/apprecList'
 import Comment from '@/components/comment'
 import PageInfo from '@/components/pageInfo'
 import AuthorInfo from '@/components/authorInfo'
@@ -38,6 +43,7 @@ export default {
   name: 'poemView',
   components: {
     PageView,
+    ApprecList,
     Comment,
     PageInfo,
     AuthorInfo

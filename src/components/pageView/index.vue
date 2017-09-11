@@ -46,7 +46,10 @@
           effect="light"
           :openDelay="1000"
         >
-          <el-button @click="createApprec(page.id)">
+          <el-button class="btn-act" @click="createApprec(page.id)" v-if="status.appreciated">
+            <i class="fa fa-pencil-square"></i>
+          </el-button>
+          <el-button @click="createApprec(page.id)" v-else>
             <i class="fa fa-pencil-square-o"></i>
           </el-button>
         </el-tooltip>

@@ -4,7 +4,7 @@
       <el-col class="nav" :span="8">
         <el-menu-item index="1" :route="{ name:'home' }">首页</el-menu-item>
         <el-menu-item index="2" :route="{ name:'poem' }">诗库</el-menu-item>
-        <el-menu-item index="4" :route="{ name:'appreciation' }">梦门</el-menu-item>
+        <el-menu-item index="4" :route="{ name:'apprec' }">梦门</el-menu-item>
         <el-menu-item index="5" :route="{ name:'feedback' }">反馈</el-menu-item>
       </el-col>
       <el-col class="searchbar-wrapper" :span="7">
@@ -95,8 +95,8 @@
       :visible.sync="createDialogVisible"
     >
       <div class="main">
-        <el-button>诗文</el-button>
-        <el-button>品鉴</el-button>
+        <el-button class="btn-pub" @click="createPoem">诗文</el-button>
+        <el-button class="btn-pub" @click="createApprec">品鉴</el-button>
       </div>
     </el-dialog>
   </el-menu>
@@ -143,9 +143,15 @@ export default {
     scout() {
       this.$router.push('/scout?query=' + this.$refs['searchbar'].$data.currentValue + '&s=' + Math.random())
     },
-    // 跳转到创作页面
+    // 跳转到诗文创作页面
     createPoem() {
       this.$router.push('/poem/create')
+      this.createDialogVisible = false
+    },
+    // 跳转到品鉴创作页面
+    createApprec() {
+      this.$router.push('/appreciation/create')
+      this.createDialogVisible = false
     },
     // 跳转到私信页面
     viewInbox() {
@@ -282,6 +288,7 @@ export default {
         border-radius 3px
         box-shadow 0 1px 1px rgba(0,0,0,.2)
       .main
+        overflow hidden
         margin-left 20px
         line-height 2em
         span
@@ -291,8 +298,9 @@ export default {
           color Green
         .body
           overflow hidden
-          height 24px
-          color Silver
+          font(.8em, Silver)
+          text-overflow ellipsis
+          white-space nowrap
   .footer
     fj(space-between)
     margin-top 10px
@@ -300,4 +308,13 @@ export default {
     border-top 1px solid Extra-Light-Grey
     .send
       font-size 2em
+.create-dialog
+  .el-dialog__title
+    color Silver
+  .main
+    fj()
+    flex-direction column
+    button
+      width 100%
+      margin 10px 0
 </style>

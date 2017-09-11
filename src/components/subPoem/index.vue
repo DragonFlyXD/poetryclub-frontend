@@ -64,7 +64,8 @@
 
 <script>
 import {
-  mapActions
+  mapActions,
+  mapGetters
 } from 'vuex'
 import Comment from '@/components/comment'
 export default {
@@ -82,6 +83,20 @@ export default {
   components: {
     Comment
   },
+  computed: {
+    summary() {
+      const body = this.poem.body
+      let summary = this.poem.summary
+      if (body.length > summary.length) {
+        summary += '<span class="ellipsis">...</span>'
+      }
+      return summary
+    },
+    ...mapGetters([
+      'poemStatus',
+      'poemCurrentPage'
+    ])
+  },
   data() {
     return {
       favored: false,  // 收藏状态
@@ -91,17 +106,7 @@ export default {
       commentDialogVisible: false
     }
   },
-  computed: {
-    summary() {
-      const body = this.poem.body
-      let summary = this.poem.summary
-      if (body.length > summary.length) {
-        summary += '<span class="ellipsis">...</span>'
-      }
-      return summary
-    }
-  },
-  mounted() {
+  created() {
     this.loadStatus()
   },
   methods: {
@@ -122,7 +127,7 @@ export default {
     // 切换点赞状态
     async toggleVoted() {
       await this.togglePoemVoted(this.poem.id)
-      this.voted = !this.voted
+      this.voted = this.poemStatus.voted
       if (this.voted) {
         this.voteCount += 1
       } else {
@@ -132,15 +137,14 @@ export default {
     // 切换收藏状态
     async toggleFavored() {
       await this.togglePoemFavored(this.poem.id)
-      this.favored = !this.favored
+      this.favored = this.poemStatus.favored
     },
     toggleCommentDialog() {
       this.commentDialogVisible = !this.commentDialogVisible
     },
     ...mapActions([
       'togglePoemVoted',
-      'togglePoemFavored',
-      'notLogged'
+      'togglePoemFavored'
     ])
   }
 }

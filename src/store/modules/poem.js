@@ -14,6 +14,7 @@ const state = {
   poemStatus: {
     voted: false, // 是否赞过诗文
     favored: false, // 是否收藏过诗文
+    appreciated: false, // 是否品鉴过该诗文
     rated: 0, // 是否评分过诗文
     followed: false, // 是否关注诗文作者
     comments: [], // 诗文评论
@@ -32,14 +33,16 @@ const actions = {
   // 加载诗文列表
   async loadPoemList({commit, state}, quit = false) {
     commit(types.TOGGLE_LOADING_STATUS, quit)
-    await api.get('poem?page=' + (state.poemCurrentPage + 1)).then(response => {
+    await api.get(`poem?page=${state.poemCurrentPage + 1}`).then(response => {
       commit(types.TOGGLE_LOADING_STATUS, quit)
       // 获取诗文列表数据
       commit(types.LOAD_POEMLIST, response.data.data)
-      // 获取分页最后一页
-      !state.poemCurrentPage && commit(types.GET_POEM_LASTPAGE, response.data.last_page)
-      // 获取当前页数
-      commit(types.GET_POEM_CURRENTPAGE, response.data.current_page)
+      if (!state.poemCurrentPage) {
+        // 获取分页最后一页
+        commit(types.STORE_POEM_LASTPAGE, response.data.last_page)
+        // 获取当前页数
+        commit(types.STORE_POEM_CURRENTPAGE, response.data.current_page)
+      }
     }).catch(error => {
       commit(types.TOGGLE_LOADING_STATUS, quit)
       Message({message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~', type: 'error', customClass: 'c-msg', duration: 0, showClose: true})
@@ -62,6 +65,10 @@ const actions = {
       }
       // 加载诗文数据与作者数据
       commit(types.LOAD_POEM, response.data)
+      // 若用户已登录，获取其品鉴状态
+      if (s.isLogined) {
+        commit(types.STORE_POEM_APPRECIATED, response.data.appreciated)
+      }
       // 加载评论信息
       commit(types.STORE_POEM_COMMENT, response.data.comments)
     }).catch(error => {
@@ -70,7 +77,7 @@ const actions = {
       Promise.reject(error)
     })
     // 加载用户关注状态
-    s.isLogined && await dispatch('getAuthorFollowed', state.poem.user.id)
+    s.isLogined && await dispatch('getPoemAuthorFollowed', state.poem.user.id)
   },
   // 获取用户对该诗文的点赞、收藏、评分状态与诗文的平均评分
   async getPoemStatus({commit}, poem) {
@@ -84,21 +91,21 @@ const actions = {
     }))
   },
   // 获取该诗文作者的关注状态
-  getAuthorFollowed({commit}, user) {
-    api.get('user/' + user + '/followed').then(response => {
+  getPoemAuthorFollowed({commit}, user) {
+    api.get(`user/${user}/followed`).then(response => {
       commit(types.TOGGLE_POEM_AUTHOR_FOLLOWED, response.data.followed)
     })
   },
   // 获取该诗文的所有评论
   getPoemComments({commit}, poem) {
-    api.get('poem/' + poem + '/comments').then(response => {
+    api.get(`poem/${poem}/comments`).then(response => {
       commit(types.STORE_POEM_COMMENT, response.data)
     })
   },
   // 切换诗文点赞的状态
-  togglePoemVoted({commit, dispatch}, poem) {
+  async togglePoemVoted({commit, dispatch}, poem) {
     if (c.notLogged()) {
-      api.post('poem/vote', {'poem': poem}).then(response => {
+      await api.post('poem/vote', {'poem': poem}).then(response => {
         commit(types.TOGGLE_POEM_VOTED, response.data.voted)
       }).catch(error => {
         Message({message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~', type: 'error', customClass: 'c-msg', duration: 0, showClose: true})
@@ -107,9 +114,9 @@ const actions = {
     }
   },
   // 切换诗文收藏的状态
-  togglePoemFavored({commit}, poem) {
+  async togglePoemFavored({commit}, poem) {
     if (c.notLogged()) {
-      api.post('poem/favorite', {'poem': poem}).then(response => {
+      await api.post('poem/favorite', {'poem': poem}).then(response => {
         commit(types.TOGGLE_POEM_FAVORED, response.data.favored)
       }).catch(error => {
         Message({message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~', type: 'error', customClass: 'c-msg', duration: 0, showClose: true})
@@ -118,7 +125,7 @@ const actions = {
     }
   },
   // 切换作者的关注状态
-  async toggleAuthorFollowed({commit}, user) {
+  async togglePoemAuthorFollowed({commit}, user) {
     if (c.notLogged()) {
       await api.post('user/follow', {'user': user}).then(response => {
         commit(types.TOGGLE_POEM_AUTHOR_FOLLOWED, response.data.followed)
@@ -152,19 +159,29 @@ const actions = {
         Promise.reject(error)
       })
     }
+  },
+  storePoemCurrentPage({commit}, currentPage) {
+    commit(types.STORE_POEM_CURRENTPAGE, currentPage)
+  },
+  storePoemLastPage({commit}, lastPage) {
+    commit(types.STORE_POEM_LASTPAGE, lastPage)
   }
 }
 const mutations = {
   [types.LOAD_POEMLIST](state, poems) {
-    state.poems = state.poems.concat(poems)
+    if (!state.poemCurrentPage) {
+      state.poems = poems
+    } else {
+      state.poems = state.poems.concat(poems)
+    }
   },
   [types.LOAD_POEM](state, poem) {
     state.poem = poem
   },
-  [types.GET_POEM_CURRENTPAGE](state, currentPage) {
+  [types.STORE_POEM_CURRENTPAGE](state, currentPage) {
     state.poemCurrentPage = currentPage
   },
-  [types.GET_POEM_LASTPAGE](state, lastPage) {
+  [types.STORE_POEM_LASTPAGE](state, lastPage) {
     state.poemLastPage = lastPage
   },
   [types.LOAD_POEM_RATING](state, rating) {
@@ -175,6 +192,9 @@ const mutations = {
   },
   [types.TOGGLE_POEM_FAVORED](state, favored) {
     state.poemStatus.favored = favored
+  },
+  [types.STORE_POEM_APPRECIATED](state, appreciated) {
+    state.poemStatus.appreciated = appreciated
   },
   [types.TOGGLE_POEM_AUTHOR_FOLLOWED](state, followed) {
     state.poemStatus.followed = followed
@@ -199,19 +219,19 @@ const mutations = {
 
 // 获取该诗文的点赞状态
 function getPoemVoted (poem) {
-  return api.get('poem/' + poem + '/voted')
+  return api.get(`poem/${poem}/voted`)
 }
 // 获取该诗文的收藏状态
 function getPoemFavored (poem) {
-  return api.get('poem/' + poem + '/favored')
+  return api.get(`poem/${poem}/favored`)
 }
 // 获取该诗文用户的评分状态
 function getPoemRated(poem) {
-  return api.get('poem/' + poem + '/rated')
+  return api.get(`poem/${poem}/rated`)
 }
 // 获取该诗文的评分
 function getPoemRating (poem) {
-  return api.get('poem/' + poem + '/rating')
+  return api.get(`poem/${poem}/rating`)
 }
 
 export default {

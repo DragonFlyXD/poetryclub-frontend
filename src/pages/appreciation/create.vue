@@ -1,20 +1,44 @@
 <template lang="html">
-  <div class="df-createPoem">
+  <div class="df-createApprec">
     <el-form class="main c-form" ref="form" :model="form" :rules="rules">
+      <el-form-item prop="poem">
+        <el-select
+          class="c-select poem"
+          popper-class="c-popper"
+          v-model="form.poem"
+          filterable
+          placeholder="请输入要被品鉴的诗文标题"
+          no-data-text="来个诗文标题~"
+          :filter-method="fetchPoem"
+        >
+          <el-option
+            v-for="(poem, index) in poems"
+            :key="index"
+            :value="poem.id"
+            :label="poem.title"
+          ></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item prop="title">
         <el-input
-          placeholder="诗文标题，1-50个字符之间。"
+          placeholder="品鉴标题，1-50个字符之间。"
           v-model="form.title"
         ></el-input>
       </el-form-item>
       <el-form-item prop="category">
-        <el-autocomplete
-          class="category"
-          placeholder="请选择一个诗文类型"
-          v-model="form.category"
+        <el-select
+          class="c-select category"
           popper-class="c-popper"
-          :fetch-suggestions="fetchCategory"
-        ></el-autocomplete>
+          v-model="form.category"
+          placeholder="请选择一个品鉴的类型"
+        >
+          <el-option
+            v-for="(category, index) in categories"
+            :key="index"
+            :value="category.id"
+            :label="category.name"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-tag
@@ -51,9 +75,8 @@
         <el-button
         class="publish"
         :loading="isLoading"
-        :disabled="isDisabled"
         @click="submitForm"
-        >发表作品</el-button>
+        >{{ isEditPage ? '更新作品' : '发表作品' }}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -61,7 +84,7 @@
 
 <script>
 import api from '@/api'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters, mapActions } from 'vuex'
 import {
   quillEditor
 } from 'vue-quill-editor'
@@ -72,23 +95,33 @@ export default {
   },
   data() {
     return {
+      isEditPage: false,  // 是否编辑页面
       form: {
+        poem: null,  // 品鉴的源诗文ID
         title: '', // 标题
-        category: '', // 分类名
+        category: null, // 分类ID
         dynamicTags: [], // 标签
         body: '' // 诗文内容
       },
+      poems: [],  // 原创搜索的诗文列表
       categories: [], // 分类列表
       iptVisible: false,
       iptValue: '',
       editorOptions: { // quill 编辑器配置
         theme: 'bubble',
-        placeholder: '诗文内容，支持Markdown语法。'
+        placeholder: '品鉴内容，支持Markdown语法。'
       },
       isLoading: false, // 按钮是否在加载
-      isDisabled: false, // 按钮是否禁用
       dialogVisible: false,
       rules: { // 表单验证规则
+        poem: [
+          {
+            required: true,
+            type: 'number',
+            message: '被品鉴的诗文标题不能为空',
+            trigger: 'change'
+          }
+        ],
         title: [
           {
             required: true,
@@ -105,11 +138,8 @@ export default {
         category: [
           {
             required: true,
+            type: 'number',
             message: '分类不能为空。',
-            trigger: 'change'
-          },
-          {
-            validator: this.checkCategory,
             trigger: 'change'
           }
         ],
@@ -121,21 +151,52 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'apprec'
+    ])
+  },
+  async created() {
+    await this.fetchCategory()
+    this.checkoutPage()
+  },
   methods: {
-    // 远程获取分类列表
-    async fetchCategory(queryStr, cb) {
-      await api.get(`category?query=${queryStr}`).then(response => {
-        this.categories = response.data.data.map(item => {
-          item['value'] = item['name']
-          return item
+    async checkoutPage() {
+      const route = this.$router.currentRoute.name
+      // 若为编辑页面
+      if (route === 'editApprec') {
+        this.isEditPage = true
+        const apprecId = this.$router.currentRoute.params.appreciation_id
+        // 加载待编辑品鉴的内容
+        await this.loadApprec(`appreciation/${apprecId}`)
+        // 表单项集合
+        const formItems = ['title', 'dynamicTags', 'category', 'body', 'poem']
+        // 填充表单数据
+        formItems.map(item => {
+          if (this.apprec[item]) {
+            this.form[item] = this.apprec[item]
+            return
+          }
+          // 若为诗文标签
+          if (item === 'dynamicTags' && this.poem['tags'].length > 0) {
+            this.poem['tags'].forEach(item => {
+              this.form['dynamicTags'].push(item.name)
+            })
+          }
         })
-      })
-      cb(this.categories)
+      }
     },
-    // 检验分类是否合法
-    checkCategory(rule, value, cb) {
-      this.categories.some(category => category['name'] === value)
-        ? cb() : cb('旅行者，分类不能自定义，必须从下拉列表中选择。')
+    // 远程获取诗文列表
+    fetchPoem(queryStr) {
+      api.get(`poem?query=${queryStr}`).then(response => {
+        this.poems = response.data.data
+      })
+    },
+    // 远程获取分类列表
+    async fetchCategory() {
+      await api.get('category').then(response => {
+        this.categories = response.data
+      })
     },
     // 去除标签
     closeTag(tag) {
@@ -176,56 +237,88 @@ export default {
     // 提交表单
     submitForm() {
       this.$refs['form'].validate(async valid => {
+        console.log(this.form)
         if (valid) {
           this.isLoading = true
-          await api.post('poem', this.form).then(response => {
-            this.isLoading = false
-            // 诗文创建成功
-            if (response.data.created) {
-              // 将新创建的诗文添加进首页中
-              this.STORE_POEM(response.data.poem)
-              // 禁用按钮
-              this.isDisabled = true
+          // 若为编辑诗文页面
+          if (this.isEditPage) {
+            const poemId = this.poem.id
+            await api.put(`poem/${poemId}`, this.form).then(response => {
+              this.isLoading = false
+              if (response.data.updated) {
+                this.$router.push(`/poem/${poemId}`)
+                this.$message({
+                  message: '诗文更新成功。',
+                  type: 'success',
+                  customClass: 'c-msg'
+                })
+              } else {
+                this.$message({
+                  message: '诗文创建失败。',
+                  type: 'error',
+                  customClass: 'c-msg'
+                })
+              }
+            }).catch(error => {
+              this.isLoading = false
               this.$message({
-                message: '诗文创建成功。',
-                type: 'success',
-                customClass: 'c-msg'
-              })
-              // 重定向到诗文页
-              setTimeout(_ => {
-                this.$router.push('/poem')
-              }, 3000)
-            } else if (response.status === 422) {
-              // 参数错误
-              this.$message({
-                message: response.statusText,
+                message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
                 type: 'error',
-                customClass: 'c-msg'
+                customClass: 'c-msg',
+                duration: 0,
+                showClose: true
               })
-            } else {
-              this.$message({
-                message: response.data.error.message,
-                type: 'error',
-                customClass: 'c-msg'
-              })
-            }
-          }).catch(error => {
-            this.isLoading = false
-            this.$message({
-              message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
-              type: 'error',
-              customClass: 'c-msg',
-              duration: 0,
-              showClose: true
+              Promise.reject(error)
             })
-            Promise.reject(error)
-          })
+          } else {
+            // 若为创建品鉴页面
+            await api.post('appreciation', this.form).then(response => {
+              this.isLoading = false
+              // 品鉴创建成功
+              if (response.data.created) {
+                // 将新创建的品鉴添加进梦门中
+                this.STORE_APPREC(response.data.appreciation)
+                this.$router.push(`/appreciation/${response.data.appreciation.id}`)
+                this.$message({
+                  message: '品鉴创建成功。',
+                  type: 'success',
+                  customClass: 'c-msg'
+                })
+              } else if (response.status === 422) {
+                // 参数错误
+                this.$message({
+                  message: response.statusText,
+                  type: 'error',
+                  customClass: 'c-msg'
+                })
+              } else {
+                this.$message({
+                  message: response.data.error.message,
+                  type: 'error',
+                  customClass: 'c-msg'
+                })
+              }
+            }).catch(error => {
+              this.isLoading = false
+              this.$message({
+                message: '旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~',
+                type: 'error',
+                customClass: 'c-msg',
+                duration: 0,
+                showClose: true
+              })
+              Promise.reject(error)
+            })
+          }
         }
         return false
       })
     },
     ...mapMutations([
-      'STORE_POEM'
+      'STORE_APPREC'
+    ]),
+    ...mapActions([
+      'loadApprec'
     ])
   }
 }
@@ -234,11 +327,13 @@ export default {
 <style lang="stylus" scoped>
 @import '../../common/stylus/common'
 
-.df-createPoem
+.df-createApprec
   fj(center)
   margin-top 50px
  .main
    width 50%
+   .poem
+     width 100%
    .category
      width 100%
    .tag

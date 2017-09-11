@@ -119,8 +119,10 @@
 
 /* el-autocomplete 下拉框 */
 .c-popper
-  li:hover
+  .hover
     color Dark-White
+    background-color Green !important
+  .selected
     background-color Green !important
 
 /* 私信对话框 */
@@ -156,6 +158,11 @@
     stroke Green !important
   .el-progress__text
     color Green
+
+/* 下拉框 */
+.c-select
+  .el-input__inner:focus
+    border-color Green
 
 /* 对话框 */
 .c-dialog

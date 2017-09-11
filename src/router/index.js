@@ -26,7 +26,7 @@ import Poem from '@/pages/poem'
 import PoemView from '@/pages/poem/view.vue'
 import CreatePoem from '@/pages/poem/create.vue'
 
-// 诗文品鉴相关
+// 品鉴相关
 import Apprec from '@/pages/appreciation'
 import CreateApprec from '@/pages/appreciation/create'
 
@@ -134,8 +134,16 @@ const router = new Router({
       }
     }, {
       path: '/appreciation',
-      name: 'appreciation',
+      name: 'apprec',
       component: Apprec
+    }, {
+      path: '/appreciation/:appreciation_id(\\d+)',
+      name: 'apprecView',
+      component: Apprec
+    }, {
+      path: '/appreciation/:appreciation_id(\\d+)/edit',
+      name: 'editApprec',
+      component: CreateApprec
     }, {
       path: '/appreciation/create',
       name: 'createApprec',

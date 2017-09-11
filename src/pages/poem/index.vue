@@ -1,9 +1,12 @@
 <template lang="html">
   <div class="df-poem">
     <div class="main">
-      <template v-for="poem in this.poems">
-        <sub-poem :poem="poem"></sub-poem>
-      </template>
+      <sub-poem
+        v-for="(poem, index) in poems"
+        :key="index"
+        :poem="poem"
+        >
+      </sub-poem>
       <el-button
         class="spinner btn-default"
         v-show="spinnerVisible"
@@ -47,13 +50,19 @@ export default {
     window.removeEventListener('scroll', this.next, false)
     next()
   },
-  created() {
+  async created() {
+    // 重置分页参数
+    this.resetPagination()
     // 加载诗文列表
-    !this.poemCurrentPage && this.loadPoemList()
+    await this.loadPoemList()
     // 给 window 绑定 scroll 事件，实现无限加载
     window.addEventListener('scroll', this.next, false)
   },
   methods: {
+    resetPagination() {
+      this.storePoemCurrentPage(0)
+      this.storePoemLastPage(0)
+    },
     // 下拉加载诗文列表
     async next() {
       // 当滚动到底部时 且 小于最后一页 且 没有正在加载中
@@ -82,7 +91,9 @@ export default {
       }
     },
     ...mapActions([
-      'loadPoemList'
+      'loadPoemList',
+      'storePoemCurrentPage',
+      'storePoemLastPage'
     ])
   }
 }

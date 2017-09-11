@@ -170,12 +170,13 @@ export default {
       wh(36px, 36px)
       border-radius 5px
     .main
-      overflow hidden
       margin-left 10px
       line-height normal
       .name
         display block
       .signature
-        font-size .8em
-        color Silver
+        overflow hidden
+        font(.8em, Silver)
+        text-overflow ellipsis
+        white-space nowrap
 </style>

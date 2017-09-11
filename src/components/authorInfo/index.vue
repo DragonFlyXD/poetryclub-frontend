@@ -5,13 +5,13 @@
         <img class="avatar" :src="page.user.avatar" alt="avatar">
       </router-link>
       <div class="info">
-        <router-link :to="{ path: '/user/'+page.user.name+'/works' }">
+        <router-link :to="{ path: `/user/${page.user.name}/works` }">
           <p>作品<span>{{ page.user.works_count }}</span></p>
         </router-link>
-        <router-link :to="{ path: '/user/'+page.user.name+'/followers' }">
+        <router-link :to="{ path: `/user/${page.user.name}/followers` }">
           <p>关注<span>{{ page.user.followers_count }}</span></p>
         </router-link>
-        <router-link :to="{ path: '/user/'+page.user.name+'/followings' }">
+        <router-link :to="{ path: `/user/${page.user.name}/followings` }">
           <p>粉丝<span>{{ page.user.followings_count }}</span></p>
         </router-link>
       </div>
@@ -43,8 +43,8 @@
             class="tdu"
             v-for="(work,index) in works"
             :key="index"
-            :to="work.poemUrl"
-            >《{{ work.poemName }}》</router-link>
+            :to="work.workUrl"
+            >《{{ work.workName }}》</router-link>
             <span class="more" v-if="isMoreWorks" @click="toggleWorksDialog">全部作品</span>
         </p>
       </div>
@@ -76,9 +76,20 @@
         </div>
       </header>
       <div class="body">
-        <div class="item" v-for="(work,index) in page.user.works" :key="index">
-          <router-link class="tdu" :to="work.poemUrl">《{{ work.poemName }}》</router-link>
-          <span>{{ work.publish_time }}</span>
+        <div class="item-wrapper" v-if="this.page.user.poems.length > 0">
+          <h3 class="title">诗文</h3>
+          <div class="item" v-for="(poem,index) in this.page.user.poems" :key="index">
+            <router-link class="tdu" :to="poem.workUrl">《{{ poem.workName }}》</router-link>
+            <span>{{ poem.publish_time }}</span>
+          </div>
+        </div>
+        <div class="item-line"></div>
+        <div class="item-wrapper" v-if="this.page.user.appreciations.length > 0">
+          <h3 class="title">品鉴</h3>
+          <div class="item" v-for="(apprec,index) in this.page.user.appreciations" :key="index">
+            <router-link class="tdu" :to="apprec.workUrl">《{{ apprec.workName }}》</router-link>
+            <span>{{ apprec.publish_time }}</span>
+          </div>
         </div>
       </div>
     </el-dialog>
@@ -126,6 +137,33 @@ export default {
       default: {}
     }
   },
+  computed: {
+    works() {
+      let poems = this.page.user.poems
+      let apprecs = this.page.user.appreciations
+      const pl = poems.length
+      const al = apprecs.length
+      let works = []
+      // 若该用户的诗文与品鉴的数量大于5，则显示更多作品按钮
+      if (pl + al > 5) {
+        this.isMoreWorks = true
+      }
+      // 抉择诗文和品鉴的显示数量
+      if (pl > 3 && al > 3) {
+        works = poems.slice(0, 3).concat(apprecs.slice(0, 2))
+      } else if (pl > 3 && al < 3) {
+        works = poems.slice(0, (5 - al)).concat(apprecs)
+      } else if (pl < 3 && al > 3) {
+        works = poems.concat(apprecs.slice(0, (5 - pl)))
+      } else {
+        works = poems.concat(apprecs)
+      }
+      return works
+    },
+    ...mapGetters([
+      'profile'
+    ])
+  },
   data() {
     return {
       replyDialogVisible: false,
@@ -153,20 +191,6 @@ export default {
       isLoading: false
     }
   },
-  computed: {
-    works() {
-      let works = this.page.user.works
-      // 如果作者作品数量大于5，则显示 全部作品 选项
-      if (works.length > 5) {
-        this.isMoreWorks = true
-        return works.slice(0, 5)
-      }
-      return works
-    },
-    ...mapGetters([
-      'profile'
-    ])
-  },
   methods: {
     // 提交私信表单
     async submitForm() {
@@ -182,6 +206,14 @@ export default {
       // 关闭对话框
       this.toggleReplyDialog()
     },
+    // 切换用户关注
+    toggleAuthorFollowed(user) {
+      if (this.$router.currentRoute.name === 'poemView') {
+        this.togglePoemAuthorFollowed(user)
+      } else {
+        this.toggleApprecAuthorFollowed(user)
+      }
+    },
     toggleReplyDialog() {
       this.replyDialogVisible = !this.replyDialogVisible
     },
@@ -189,7 +221,8 @@ export default {
       this.worksDialogVisible = !this.worksDialogVisible
     },
     ...mapActions([
-      'toggleAuthorFollowed',
+      'togglePoemAuthorFollowed',
+      'toggleApprecAuthorFollowed',
       'storeInboxMessage'
     ])
   }
@@ -238,27 +271,30 @@ export default {
       .more
         display block
         margin 10px 0 20px 0
-        border 1px solid Silver
+        border 1px solid Light-Silver
+        border-radius 3px
         font-size 1.1em
         text-align center
         cursor pointer
         transition all .2s
-        &:hover
-          border-radius 50%
-          border-color Green
-          bc(Green,Green)
+        &:hover,&:focus
+          border-color Silver
   .footer
     margin-top 20px
     color Silver
     &>button:last-child
       float right
-  .works-dialog
-    .header
-      fj(space-around)
-      .total-works
-        color Green
-    .body
+.works-dialog
+  .header
+    fj(space-around)
+    .total-works
+      color Red
+  .body
+    margin 20px 0
+    .item-line
+      height 1px
       margin 20px 0
-      .item
-        fj(space-between)
+      background-color Extra-Light-Silver
+    .item
+      fj(space-between)
 </style>

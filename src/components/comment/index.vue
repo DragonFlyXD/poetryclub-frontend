@@ -52,14 +52,12 @@
           <div class="main">
             <div class="info">
               <div class="name">
-                <span class="reply-title" v-if="item.parent !== null">勇敢的回复者</span>
                 <router-link class="tdu" :to="{ path: item.profileUrl }">{{ item.nickname }}</router-link>
               </div>
               <span>{{ item.publish_time }}</span>
             </div>
             <div class="body">{{ item.body }}
               <div class="reply-body" v-if="item.parent !== null">
-                <span class="reply-title">骄傲的先驱者</span>
                 <router-link class="tdu" :to="{ path: item.parent.profileUrl }">{{ item.parent.nickname }}:</router-link>
                 <span>{{ item.parent.body }}</span>
               </div>

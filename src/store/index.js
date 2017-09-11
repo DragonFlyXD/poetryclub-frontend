@@ -8,6 +8,7 @@ import user from './modules/user'
 import profile from './modules/profile'
 import inbox from './modules/inbox'
 import poem from './modules/poem'
+import apprec from './modules/apprec'
 import scout from './modules/scout'
 
 Vue.use(Vuex)
@@ -22,6 +23,7 @@ const store = new Vuex.Store({
     profile,
     inbox,
     poem,
+    apprec,
     scout
   }
 })
