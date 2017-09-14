@@ -146,15 +146,20 @@ export default {
         const formItems = ['title', 'dynamicTags', 'category', 'body']
         // 填充表单数据
         formItems.map(item => {
-          if (this.poem[item]) {
-            this.form[item] = this.poem[item]
-            return
-          }
-          // 若为诗文标签
-          if (item === 'dynamicTags' && this.poem['tags'].length > 0) {
+          if (item === 'category') {
+            this.categories.some(category => {
+              if (category.id === this.poem['category_id']) {
+                this.form.category = category.id
+                return true
+              }
+            })
+          } else if (item === 'dynamicTags' && this.poem['tags'].length > 0) {
+            // 若为诗文标签
             this.poem['tags'].forEach(item => {
               this.form['dynamicTags'].push(item.name)
             })
+          } else if (this.poem[item]) {
+            this.form[item] = this.poem[item]
           }
         })
       }
@@ -220,7 +225,7 @@ export default {
                 })
               } else {
                 this.$message({
-                  message: '诗文创建失败。',
+                  message: '诗文更新失败。',
                   type: 'error',
                   customClass: 'c-msg'
                 })

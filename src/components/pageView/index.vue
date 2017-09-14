@@ -18,7 +18,7 @@
         <el-button
           class="btn-can edit"
           v-if="page.user_id === profile.id"
-          @click="editPoem"
+          @click="editPage"
         >编辑</el-button>
       </div>
     </header>
@@ -33,23 +33,24 @@
           effect="light"
           :openDelay="1000"
         >
-          <el-button class="btn-act" @click="toggleFavored(page.id)" v-if="status.favored">
+          <el-button class="btn-act" @click="toggleFavored" v-if="status.favored">
             <i class="fa fa-heart"></i>
           </el-button>
-          <el-button @click="toggleFavored(page.id)" v-else>
+          <el-button @click="toggleFavored" v-else>
             <i class="fa fa-heart-o"></i>
           </el-button>
         </el-tooltip>
         <el-tooltip
+          v-if="this.model === 'poem'"
           content="给Ta写赏析"
           placement="top"
           effect="light"
           :openDelay="1000"
         >
-          <el-button class="btn-act" @click="createApprec(page.id)" v-if="status.appreciated">
+          <el-button class="btn-act" @click="createApprec" v-if="status.appreciated">
             <i class="fa fa-pencil-square"></i>
           </el-button>
-          <el-button @click="createApprec(page.id)" v-else>
+          <el-button @click="createApprec" v-else>
             <i class="fa fa-pencil-square-o"></i>
           </el-button>
         </el-tooltip>
@@ -59,10 +60,10 @@
           effect="light"
           :openDelay="1000"
         >
-          <el-button class="btn-act" @click="toggleVoted(page.id)" v-if="status.voted">
+          <el-button class="btn-act" @click="toggleVoted" v-if="status.voted">
             <i class="fa fa-thumbs-up"></i>
           </el-button>
-          <el-button @click="toggleVoted(page.id)" v-else>
+          <el-button @click="toggleVoted" v-else>
             <i class="fa fa-thumbs-o-up"></i>
           </el-button>
         </el-tooltip>
@@ -133,14 +134,18 @@ export default {
     ])
   },
   methods: {
-    toggleVoted(id) {
+    toggleVoted() {
       if (this.model === 'poem') {
-        this.togglePoemVoted(id)
+        this.togglePoemVoted(this.page.id)
+      } else if (this.model === 'apprec') {
+        this.toggleApprecVoted(this.page.id)
       }
     },
-    toggleFavored(id) {
+    toggleFavored() {
       if (this.model === 'poem') {
-        this.togglePoemFavored(id)
+        this.togglePoemFavored(this.page.id)
+      } else if (this.model === 'apprec') {
+        this.toggleApprecFavored(this.page.id)
       }
     },
     storeRated() {
@@ -153,15 +158,27 @@ export default {
       rating[ratingLevel] = 1
       if (this.model === 'poem') {
         this.storePoemRated(rating)
+      } else if (this.model === 'apprec') {
+        this.storeApprecRated(rating)
       }
     },
-    editPoem() {
-      this.$router.push(this.$router.currentRoute.path + '/edit')
+    createApprec() {
+      this.$router.push(`/appreciation/create?poem=${this.page.id}`)
+    },
+    editPage() {
+      if (this.model === 'poem') {
+        this.$router.push(`${this.$router.currentRoute.path}/edit`)
+      } else if (this.model === 'apprec') {
+        this.$router.push(`${this.$router.currentRoute.path}/edit?poem=${this.page.poem_id}`)
+      }
     },
     ...mapActions([
       'togglePoemVoted',
       'togglePoemFavored',
-      'storePoemRated'
+      'storePoemRated',
+      'toggleApprecVoted',
+      'toggleApprecFavored',
+      'storeApprecRated'
     ])
   }
 }

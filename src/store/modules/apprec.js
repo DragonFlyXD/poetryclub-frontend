@@ -131,7 +131,6 @@ const actions = {
   // 存储品鉴评论内容
   storeApprecComment({commit}, comment) {
     if (c.notLogged()) {
-      comment.type = 'appreciation'
       api.post('appreciation/comment', comment).then(response => {
         commit(types.STORE_APPREC_COMMENT, response.data)
         Message({message: '评论成功。', type: 'success', customClass: 'c-msg'})
@@ -206,19 +205,19 @@ const mutations = {
 
 // 获取该品鉴的点赞状态
 function getApprecVoted (apprec) {
-  return api.get(`apprec/${apprec}/voted`)
+  return api.get(`appreciation/${apprec}/voted`)
 }
 // 获取该品鉴的收藏状态
 function getApprecFavored (apprec) {
-  return api.get(`apprec/${apprec}/favored`)
+  return api.get(`appreciation/${apprec}/favored`)
 }
 // 获取该品鉴用户的评分状态
 function getApprecRated(apprec) {
-  return api.get(`apprec/${apprec}/rated`)
+  return api.get(`appreciation/${apprec}/rated`)
 }
 // 获取该品鉴的评分
 function getApprecRating (apprec) {
-  return api.get(`apprec/${apprec}/rating`)
+  return api.get(`appreciation/${apprec}/rating`)
 }
 
 export default {

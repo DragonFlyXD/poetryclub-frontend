@@ -112,9 +112,9 @@ export default {
       type: Number,
       default: 0
     },
-    isIndex: {
-      type: Boolean,
-      default: false
+    model: {
+      type: String,
+      default: 'poem'
     }
   },
   components: {
@@ -133,7 +133,7 @@ export default {
     ])
   },
   methods: {
-    // 存储相关诗文的评论
+    // 存储评论
     async storeComment() {
       // 如果文本框无内容，则提醒用户输入
       // 并展示 shakeTextarea 的动画效果
@@ -142,11 +142,14 @@ export default {
       } else {
         const comment = {
           'model': this.modelId,
+          'type': this.model,
           'body': this.body
         }
-        // 存储诗文
-        await this.storePoemComment(comment)
-        this.isIndex && await this.getPoemComments(this.modelId)
+        if (this.model === 'poem') {
+          await this.storePoemComment(comment)
+        } else if (this.model === 'apprec') {
+          await this.storeApprecComment(comment)
+        }
         this.body = ''
       }
     },
@@ -163,11 +166,15 @@ export default {
       }
       const comment = {
         'model': this.modelId,
+        'type': this.model,
         'body': body,
         'parent': e.currentTarget.dataset.commentId
       }
-      await this.storePoemComment(comment)
-      this.isIndex && await this.getPoemComments(this.modelId)
+      if (this.model === 'poem') {
+        await this.storePoemComment(comment)
+      } else if (this.model === 'apprec') {
+        await this.storeApprecComment(comment)
+      }
       this.$refs[e.currentTarget.dataset.commentId][0].style.display = 'none'
       textarea.value = ''
     },
@@ -220,7 +227,7 @@ export default {
     },
     ...mapActions([
       'storePoemComment',
-      'getPoemComments'
+      'storeApprecComment'
     ])
   }
 }

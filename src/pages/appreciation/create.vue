@@ -157,6 +157,7 @@ export default {
     ])
   },
   async created() {
+    await this.getPoem()
     await this.fetchCategory()
     this.checkoutPage()
   },
@@ -170,21 +171,33 @@ export default {
         // 加载待编辑品鉴的内容
         await this.loadApprec(`appreciation/${apprecId}`)
         // 表单项集合
-        const formItems = ['title', 'dynamicTags', 'category', 'body', 'poem']
+        const formItems = ['title', 'dynamicTags', 'category', 'body']
         // 填充表单数据
         formItems.map(item => {
-          if (this.apprec[item]) {
-            this.form[item] = this.apprec[item]
-            return
-          }
-          // 若为诗文标签
-          if (item === 'dynamicTags' && this.poem['tags'].length > 0) {
-            this.poem['tags'].forEach(item => {
+          if (item === 'category') {
+            this.categories.some(category => {
+              if (category.id === this.apprec['category_id']) {
+                this.form.category = category.id
+                return true
+              }
+            })
+          } else if (item === 'dynamicTags' && this.apprec['tags'].length > 0) {
+            this.apprec['tags'].forEach(item => {
               this.form['dynamicTags'].push(item.name)
             })
+          } else if (this.apprec[item]) {
+            this.form[item] = this.apprec[item]
           }
         })
       }
+    },
+    // 获取品鉴源诗文
+    async getPoem() {
+      const poemId = this.$router.currentRoute.query.poem
+      await api.get(`poem/${poemId}`).then(response => {
+        this.poems = [response.data]
+        this.form.poem = parseInt(poemId)
+      })
     },
     // 远程获取诗文列表
     fetchPoem(queryStr) {
@@ -239,21 +252,21 @@ export default {
       this.$refs['form'].validate(async valid => {
         if (valid) {
           this.isLoading = true
-          // 若为编辑诗文页面
+          // 若为编辑品鉴页面
           if (this.isEditPage) {
-            const poemId = this.poem.id
-            await api.put(`poem/${poemId}`, this.form).then(response => {
+            const apprec = this.apprec.id
+            await api.put(`appreciation/${apprec}`, this.form).then(response => {
               this.isLoading = false
               if (response.data.updated) {
-                this.$router.push(`/poem/${poemId}`)
+                this.$router.push(`/appreciation/${apprec}`)
                 this.$message({
-                  message: '诗文更新成功。',
+                  message: '品鉴更新成功。',
                   type: 'success',
                   customClass: 'c-msg'
                 })
               } else {
                 this.$message({
-                  message: '诗文创建失败。',
+                  message: '品鉴更新失败。',
                   type: 'error',
                   customClass: 'c-msg'
                 })

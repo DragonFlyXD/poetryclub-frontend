@@ -15,7 +15,7 @@
       ></comment>
     </div>
     <div class="side">
-      <div class="text-line-40">POEM</div>
+      <div class="text-line-40">INFO</div>
       <page-info
         :page="poem"
         :status="poemStatus"

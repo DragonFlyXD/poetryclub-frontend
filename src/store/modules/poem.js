@@ -136,7 +136,6 @@ const actions = {
   // 存储诗文评论内容
   storePoemComment({commit}, comment) {
     if (c.notLogged()) {
-      comment.type = 'poem'
       api.post('poem/comment', comment).then(response => {
         commit(types.STORE_POEM_COMMENT, response.data)
         Message({message: '评论成功。', type: 'success', customClass: 'c-msg'})

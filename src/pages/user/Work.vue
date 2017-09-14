@@ -10,7 +10,14 @@
             >{{ works.author.nickname }}</router-link>
           共有<span class="sum">{{ works.author.works_count }}</span>部作品
         </div>
-        <sub-poem :poem="poem" v-for="(poem, index) in works.poem" :key="index"></sub-poem>
+        <div class="item">
+          <h2 class="title">诗文</h2>
+          <sub-poem :poem="poem" v-for="(poem, index) in works.poem" :key="index"></sub-poem>
+        </div>
+        <div class="item">
+          <h2 class="title">品鉴</h2>
+          <sub-apprec :apprec="apprec" v-for="(apprec, index) in works.appreciation" :key="index"></sub-apprec>
+        </div>
       </div>
       <blank-area hint="暂无作品" v-else></blank-area>
     </div>
@@ -23,10 +30,12 @@ import { mapMutations } from 'vuex'
 import Intro from '@/components/intro'
 import BlankArea from '@/components/blankArea'
 import SubPoem from '@/components/subPoem'
+import SubApprec from '@/components/subApprec'
 export default {
   name: 'userWork',
   components: {
     SubPoem,
+    SubApprec,
     Intro,
     BlankArea
   },
@@ -83,4 +92,9 @@ export default {
         .sum
           color Red
           margin 0 5px
+      .item
+        padding 20px 0
+        .title
+          text-align center
+          color Silver
 </style>
