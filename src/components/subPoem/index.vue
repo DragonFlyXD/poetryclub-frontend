@@ -199,6 +199,7 @@ export default {
         max-height 120px
         overflow hidden
         padding-bottom 20px
+        word-break break-all
         line-height 2em
         cursor pointer
         .ellipsis

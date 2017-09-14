@@ -9,7 +9,7 @@
           :to="{ path : page.profileUrl}"
           >{{ page.authorName }}</router-link>
         </span>
-        <span v-if="isOriginal">
+        <span v-if="model === 'appreciation'">
           <i class="fa fa-clock-o"></i>{{ page.publish_time }}
         </span>
         <span v-else>
@@ -23,7 +23,7 @@
       </div>
     </header>
     <div class="body">
-      <div class="content" v-html="page.body"></div>
+      <div class="content" v-html="page.body" v-highlight></div>
     </div>
     <footer class="footer">
       <div class="actions">
@@ -124,7 +124,6 @@ export default {
   },
   data() {
     return {
-      isOriginal: false,
       rating: 0
     }
   },

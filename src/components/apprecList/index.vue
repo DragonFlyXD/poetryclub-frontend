@@ -112,11 +112,13 @@ export default {
     .title
       font(1.2em, Silver)
     .content
-      overflow hidden
+      height 125px
       margin 5px 0
       font(.8em, Silver)
-      text-overflow ellipsis
-      white-space nowrap
+      p
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
   .right
     padding-left 10px
     .avatar

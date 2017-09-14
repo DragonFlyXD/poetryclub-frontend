@@ -179,7 +179,7 @@ export default {
        .content
          overflow hidden
          max-height 120px
-         padding-bottom 20px
+         word-break break-all
          line-height 2em
          cursor pointer
          .ellipsis
