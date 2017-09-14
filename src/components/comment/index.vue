@@ -147,7 +147,7 @@ export default {
         }
         if (this.model === 'poem') {
           await this.storePoemComment(comment)
-        } else if (this.model === 'apprec') {
+        } else if (this.model === 'appreciation') {
           await this.storeApprecComment(comment)
         }
         this.body = ''
@@ -172,7 +172,7 @@ export default {
       }
       if (this.model === 'poem') {
         await this.storePoemComment(comment)
-      } else if (this.model === 'apprec') {
+      } else if (this.model === 'appreciation') {
         await this.storeApprecComment(comment)
       }
       this.$refs[e.currentTarget.dataset.commentId][0].style.display = 'none'

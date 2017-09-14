@@ -137,14 +137,14 @@ export default {
     toggleVoted() {
       if (this.model === 'poem') {
         this.togglePoemVoted(this.page.id)
-      } else if (this.model === 'apprec') {
+      } else if (this.model === 'appreciation') {
         this.toggleApprecVoted(this.page.id)
       }
     },
     toggleFavored() {
       if (this.model === 'poem') {
         this.togglePoemFavored(this.page.id)
-      } else if (this.model === 'apprec') {
+      } else if (this.model === 'appreciation') {
         this.toggleApprecFavored(this.page.id)
       }
     },
@@ -158,7 +158,7 @@ export default {
       rating[ratingLevel] = 1
       if (this.model === 'poem') {
         this.storePoemRated(rating)
-      } else if (this.model === 'apprec') {
+      } else if (this.model === 'appreciation') {
         this.storeApprecRated(rating)
       }
     },
@@ -168,7 +168,7 @@ export default {
     editPage() {
       if (this.model === 'poem') {
         this.$router.push(`${this.$router.currentRoute.path}/edit`)
-      } else if (this.model === 'apprec') {
+      } else if (this.model === 'appreciation') {
         this.$router.push(`${this.$router.currentRoute.path}/edit?poem=${this.page.poem_id}`)
       }
     },

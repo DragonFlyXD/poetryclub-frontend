@@ -2,12 +2,12 @@
   <div class="df-apprecView">
     <div class="main">
       <page-view
-        model="apprec"
+        model="appreciation"
         :page="apprec"
         :status="apprecStatus"
       ></page-view>
       <comment
-        model="apprec"
+        model="appreciation"
         :comments="apprecStatus.comments"
         :modelId="apprec.id"
       ></comment>
