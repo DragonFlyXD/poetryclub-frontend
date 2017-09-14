@@ -2,10 +2,25 @@
   <div class="df-scout">
     <div class="main-wrapper">
       <div class="main">
-        <blank-area v-if="this.scoutPoems.length === 0" hint="查无此文"></blank-area>
-        <template v-for="poem in this.scoutPoems" v-else>
-          <sub-poem :poem="poem"></sub-poem>
-        </template>
+        <blank-area v-if="this.scoutPoems.length + this.scoutApprecs.length === 0" hint="查无此文"></blank-area>
+        <div class="content" v-else>
+          <div class="poems" v-if="this.scoutPoems.length > 0">
+            <div class="billboard">
+              <h3><i class="fa fa-fire"></i>诗文</h3>
+            </div>
+            <template v-for="(poem, index) in this.scoutPoems">
+              <sub-poem :poem="poem" :key="index"></sub-poem>
+            </template>
+          </div>
+          <div class="apprecs" v-if="this.scoutApprecs.length > 0">
+            <div class="billboard">
+              <h3><i class="fa fa-book"></i>品鉴</h3>
+            </div>
+            <template v-for="(apprec, index) in this.scoutApprecs">
+              <sub-apprec :apprec="apprec" :key="index"></sub-apprec>
+            </template>
+          </div>
+        </div>
       </div>
       <div class="powered">
         <strong class="title">Powered By</strong>
@@ -73,6 +88,7 @@
 
 <script>
 import SubPoem from '@/components/subPoem'
+import SubApprec from '@/components/subApprec'
 import BlankArea from '@/components/blankArea'
 import {
   mapGetters,
@@ -82,24 +98,26 @@ export default {
   name: 'scout',
   components: {
     SubPoem,
+    SubApprec,
     BlankArea
   },
   computed: {
     ...mapGetters([
-      'scoutPoems'
+      'scoutPoems',
+      'scoutApprecs'
     ])
   },
   created() {
-    this.scoutPoemList()
+    this.scoutContentList()
   },
   watch: {
     '$route' () {
-      this.scoutPoemList()
+      this.scoutContentList()
     }
   },
   methods: {
     ...mapActions([
-      'scoutPoemList'
+      'scoutContentList'
     ])
   }
 }
@@ -114,7 +132,16 @@ export default {
     fj(center,center)
     flex-direction column
     .main
-      width 75%
+      width 50%
+      .content
+        .apprecs
+          padding-top 20px
+        .billboard
+          border-bottom 1px solid Extra-Light-Grey
+          color Silver
+          i
+            margin-right 20px
+            color Red
     .powered
       fj()
       margin-top 50px

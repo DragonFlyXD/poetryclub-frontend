@@ -22,8 +22,8 @@ export const TOGGLE_LOADING_STATUS = 'TOGGLE_LOADING_STATUS'
 
 /* ------------------------  品鉴相关  ------------------------ */
 
-// 加载检索的诗文列表
-export const SCOUT_POEMLIST = 'scout/SCOUT_POENLIST'
+// 加载检索的内容列表
+export const SCOUT_CONTENTLIST = 'scout/SCOUT_CONTENTLIST'
 
 /* ------------------------------------------------------------------------ */
 
