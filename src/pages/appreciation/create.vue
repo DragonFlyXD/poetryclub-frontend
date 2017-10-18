@@ -258,7 +258,6 @@ export default {
             await api.put(`appreciation/${apprec}`, this.form).then(response => {
               this.isLoading = false
               if (response.data.updated) {
-                this.$router.push(`/appreciation/${apprec}`)
                 this.$message({
                   message: '品鉴更新成功。',
                   type: 'success',

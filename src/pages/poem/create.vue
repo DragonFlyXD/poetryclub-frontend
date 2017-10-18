@@ -217,7 +217,6 @@ export default {
             await api.put(`poem/${poemId}`, this.form).then(response => {
               this.isLoading = false
               if (response.data.updated) {
-                this.$router.push(`/poem/${poemId}`)
                 this.$message({
                   message: '诗文更新成功。',
                   type: 'success',

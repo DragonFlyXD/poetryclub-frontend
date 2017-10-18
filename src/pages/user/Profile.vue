@@ -112,20 +112,20 @@
           </el-form-item>
           <el-form-item label="私人语录" prop="signature">
             <el-input
-            type="textarea"
-            v-model="userProfile.signature"
-            :placeholder="placeholder.signature"
-            :rows="2"
-            @focus="hidePlaceholder"
-            @blur="showPlaceholder"
+              type="textarea"
+              v-model="userProfile.signature"
+              :placeholder="placeholder.signature"
+              :rows="2"
+              @focus="hidePlaceholder"
+              @blur="showPlaceholder"
             ></el-input>
           </el-form-item>
           <el-form-item label="居住地" prop="location">
             <el-input
-            :placeholder="placeholder.location"
-            v-model="userProfile.location"
-            @focus="hidePlaceholder"
-            @blur="showPlaceholder"
+              :placeholder="placeholder.location"
+              v-model="userProfile.location"
+              @focus="hidePlaceholder"
+              @blur="showPlaceholder"
             ></el-input>
           </el-form-item>
           <el-form-item label="职业" prop="occupation">
@@ -219,7 +219,7 @@ export default {
         }],
         bio: [{
           max: 400,
-          message: '个人简介不能大于500个字符。',
+          message: '个人简介不能大于400个字符。',
           trigger: 'blur'
         }],
         poet: [{
