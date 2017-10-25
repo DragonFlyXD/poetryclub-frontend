@@ -131,7 +131,7 @@ export default {
           trigger: 'blur'
         }, {
           type: 'string',
-          pattern: /^[\u4E00-\u9FFFa-zA-Z0-9_-]{4,20}$/,
+          pattern: /^[\u4E00-\u9FFFa-zA-Z0-9_-]{2,20}$/,
           message: '格式不正确。',
           trigger: 'blur'
         }, {

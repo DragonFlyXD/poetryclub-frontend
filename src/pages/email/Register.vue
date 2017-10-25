@@ -6,11 +6,13 @@
         type="success"
         description="旅行者，恭喜你注册成功。之后的日子里，诗词小筑会一直陪着你。直至终焉， :)"
         v-if="isSuccess"
+        v-show="isShow"
       ></el-alert>
       <el-alert
         title="激活账号失败"
         type="error"
         description="旅行者，诗词小筑出了点状况，您可以稍后再来光顾，拜托啦/(ㄒoㄒ)/~~"
+        v-show="isShow"
         v-else
       ></el-alert>
     </div>
@@ -66,7 +68,8 @@ export default {
   data() {
     return {
       // 是否验证成功
-      isSuccess: false
+      isSuccess: false,
+      isShow: false
     }
   },
   created() {
@@ -86,18 +89,19 @@ export default {
         }, 0)
       } else {
         // 发起请求，验证token值
-        api.get('email/verify?token=' + token).then(response => {
+        api.get(`email/register/verify?token=${token}`).then(response => {
           this.TOGGLE_LOADING_STATUS()
-          this.isSuccess = response.data.verified
+          this.isShow = true
+          this.isSuccess = response.data.registered
         }).catch(error => {
           this.TOGGLE_LOADING_STATUS()
+          this.isShow = true
           Promise.reject(error)
         })
       }
     },
     ...mapMutations([
-      'TOGGLE_LOADING_STATUS',
-      'CHECKOUT_LOGIN_STATUS'
+      'TOGGLE_LOADING_STATUS'
     ])
   }
 }

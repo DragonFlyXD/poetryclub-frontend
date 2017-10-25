@@ -4,7 +4,9 @@
       <router-link class="title" :to="apprec.appreciationUrl">{{ apprec.title }}</router-link>
       <div class="refer">
         <span>源自诗文:</span>
-        <router-link class="refer-poem" :to="apprec.poem.poemUrl">{{ apprec.poem.title }}</router-link>
+        <router-link class="refer-poem" :to="apprec.poem ? apprec.poem.poemUrl : '#'">
+          {{ apprec.poem ? apprec.poem.title : 'NULL' }}
+        </router-link>
       </div>
     </header>
     <div class="main-wrapper">
